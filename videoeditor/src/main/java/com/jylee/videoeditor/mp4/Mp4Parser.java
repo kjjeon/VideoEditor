@@ -169,23 +169,6 @@ public class Mp4Parser {
 			return false;
 		}
 		return true;
-
-		//		FileOutputStream fos;
-//		try {
-//			fos = new FileOutputStream(outputFile);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//		BufferedWritableFileByteChannel byteBufferByteChannel = new BufferedWritableFileByteChannel(fos);
-//		try {
-//			out.writeContainer(byteBufferByteChannel);
-//			byteBufferByteChannel.close();
-//			fos.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
 	}
 
 	public class ConvertAsyncTask extends AsyncTask<Mp4ParserProperty, Integer, Void> {
@@ -213,79 +196,4 @@ public class Mp4Parser {
 			mListener.onFininsh(mp4ParserProperty.getJobType(),mp4ParserProperty.getOutPath());
 		}
 	}
-
 }
-
-
-//		String[] list = property.videoList.toArray(new String[property.videoList.size()]);
-
-
-//	Movie[] inMovies = new Movie[count];
-//	for (int i = count - 1; i >= 0; i--) {
-//		File file = new File(lv1List.get(i));
-//		if (file.exists())
-//	{ try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } }
-//	List videoTracks = new LinkedList ();
-//	List audioTracks = new LinkedList ();
-//	for (Movie m : inMovies)
-//	{ for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } }
-//	try {
-//		MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath));
-//		CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort);
-//	}catch (Exception e) {
-//		e.printStackTrace();
-//	}
-//		Movie result = new Movie();
-//		try {
-//			if (audioTracks.size() > 0){
-//				result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()])));
-//			}
-//			if (videoTracks.size() > 0){
-//				result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
-//			}
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//
-//
-//		try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }   Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }   Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }   Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }   Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }  Movie[] inMovies = new Movie[count]; for (int i = count - 1; i >= 0; i--) { File file = new File(lv1List.get(i)); if (file.exists()) { try { inMovies[counter] = MovieCreator.build(file.getAbsolutePath()); counter++; } catch (Exception e) { Log.d("mp4parse", e.getMessage()); } } } List videoTracks = new LinkedList (); List audioTracks = new LinkedList (); for (Movie m : inMovies) { for (Track t : m.getTracks()) { if (t.getHandler().equals("vide")) { videoTracks.add(t); } } } try { MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(audiopath)); CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size()); audioTracks.add(aacTrackShort); } catch (Exception e) { e.printStackTrace(); } Movie result = new Movie(); try { if (audioTracks.size() > 0) { result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]))); } if (videoTracks.size() > 0) { result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]))); } } catch (Exception e) { e.printStackTrace(); } try { Container out = new DefaultMp4Builder().build(result); String filename = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MERGEDoutput" + Long.toString(System.currentTimeMillis()) + ".mp4"; FileOutputStream fos = new FileOutputStream(new File(filename)); out.writeContainer(fos.getChannel()); fos.close(); } catch (Exception e) { }
-
-
-//
-// if(CUSTOMMUSIC==true) {
-//		 //removing headers
-//		 Mp3File mp3file = new Mp3File(realpathtomusic);
-//		 if (mp3file.hasId3v1Tag()) {
-//		 mp3file.removeId3v1Tag();
-//		 Log.d("MP3agic", "removeId3v1Tag");
-//		 }
-//		 if (mp3file.hasId3v2Tag()) {
-//		 mp3file.removeId3v2Tag();
-//		 Log.d("MP3agic", "removeId3v2Tag");
-//		 }
-//		 if (mp3file.hasCustomTag()) {
-//		 mp3file.removeCustomTag();
-//		 Log.d("MP3agic", "removeCustomTag");
-//		 }
-//
-//		 String tempdir = String.format(Environment.getExternalStorageDirectory() + "/Logit/temp.mp3");
-//		 File file = new File(tempdir);
-//		 if (file.exists())
-//		 file.delete();
-//		 mp3file.save(tempdir);
-//		 MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(tempdir));
-//		 CroppedTrack croppedaacTrack = new CroppedTrack(aacTrack, 0, (long) ((lengthInSeconds * 1000) / 26));
-//		 result.addTrack(croppedaacTrack);
-//		 }
-//		 else{
-//		 AACTrackImpl aacTrack = new AACTrackImpl(new FileDataSourceImpl(realpathtomusic));
-//		 CroppedTrack croppedaacTrack = new CroppedTrack(aacTrack, 0, (long) ((lengthInSeconds * 1000) / 26));
-//		 result.addTrack(croppedaacTrack);
-//		 }
-//
-//		 if (videoTracks.size() > 0) {
-//		 result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
-//		 }
-//
-//		 BasicContainer out = (BasicContainer) new DefaultMp4Builder().build(result);
