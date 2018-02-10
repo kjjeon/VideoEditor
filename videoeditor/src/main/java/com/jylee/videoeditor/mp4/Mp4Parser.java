@@ -1,18 +1,13 @@
 package com.jylee.videoeditor.mp4;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.coremedia.iso.boxes.Container;
-import com.googlecode.mp4parser.FileDataSourceImpl;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
-import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
-import com.googlecode.mp4parser.authoring.tracks.MP3TrackImpl;
-import com.mpatric.mp3agic.Mp3File;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -135,7 +130,6 @@ public class Mp4Parser {
 				return false;
 			}
 		}
-
 		List<Track> videoTracks = new LinkedList<Track>();
 		List<Track> audioTracks = new LinkedList<Track>();
 
@@ -146,39 +140,13 @@ public class Mp4Parser {
 				}
 			}
 		}
-
 		try {
-
-
-			Mp3File mp3file = new Mp3File(property.bgm);
-			if (mp3file.hasId3v1Tag()) {
-				mp3file.removeId3v1Tag();
-				Log.d("MP3agic", "removeId3v1Tag");
+			Movie m4aAudio =  MovieCreator.build(property.bgm);
+			for (Track t : m4aAudio.getTracks()) {
+				if (t.getHandler().equals("soun")) {
+					audioTracks.add(t);
+				}
 			}
-			if (mp3file.hasId3v2Tag()) {
-				mp3file.removeId3v2Tag();
-				Log.d("MP3agic", "removeId3v2Tag");
-			}
-			if (mp3file.hasCustomTag()) {
-				mp3file.removeCustomTag();
-				Log.d("MP3agic", "removeCustomTag");
-			}
-			mp3file.save(property.bgm);
-
-		}catch (Exception e){
-			return false;
-		}
-
-//			MP3TrackImpl mp3Track = new MP3TrackImpl(new FileDataSourceImpl(intermediatemp3));
-//
-//
-//			video.addTrack(mp3Track);
-
-		try {
-			MP3TrackImpl aacTrack = new MP3TrackImpl(new FileDataSourceImpl(property.bgm));
-			CroppedTrack aacTrackShort = new CroppedTrack(aacTrack, 1, aacTrack.getSamples().size());
-			audioTracks.add(aacTrackShort);
-
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -199,39 +167,6 @@ public class Mp4Parser {
 		if (saveOutputfile(property.outPath,container) == false){
 			return false;
 		}
-
-
-//		Movie video;
-//		try {
-//			video = new MovieCreator().build(property.videoList.get(0));
-//		} catch (RuntimeException e) {
-//			e.printStackTrace();
-//			return false;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//		Movie audio;
-//		try {
-//
-//			audio = new MovieCreator().build(property.bgm);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		} catch (NullPointerException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//
-//		Track audioTrack = audio.getTracks().get(0);
-//		video.addTrack(audioTrack);
-//
-//		Container container = new DefaultMp4Builder().build(video);
-//
-//		if (saveOutputfile(property.outPath,container) == false){
-//			return false;
-//		}
-
 		return true;
 	}
 
