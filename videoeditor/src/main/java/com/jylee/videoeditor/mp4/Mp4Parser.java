@@ -30,20 +30,15 @@ public class Mp4Parser {
 		mListener = listener;
 	}
 
-	public void startToAppend(String output, ArrayList<String> videoList ) {
+	public void run(String output, ArrayList<String> videoList, ArrayList<String> audioList ) {
 		if (mTask == null) {
 			mTask = new ConvertAsyncTask();
-			Mp4ParserProperty property = new Mp4ParserProperty(Mp4ParserProperty.JOB_APPEND,output,videoList);
-			mTask.execute(property);
-		}
-	}
-
-	public void startToAddBgm(String output, String video, String bgm) {
-		if (mTask == null) {
-			mTask = new ConvertAsyncTask();
-			ArrayList<String> videoList = new ArrayList<String>();
-			videoList.add(video);
-			Mp4ParserProperty property = new Mp4ParserProperty(Mp4ParserProperty.JOB_ADDBGM, output, videoList, bgm);
+			Mp4ParserProperty property;
+			if (audioList == null) {
+				property = new Mp4ParserProperty(Mp4ParserProperty.JOB_TYPE_APPEND, output, videoList);
+			}else{
+				property = new Mp4ParserProperty(Mp4ParserProperty.JOB_TYPE_ADDBGM, output, videoList, audioList);
+			}
 			mTask.execute(property);
 		}
 	}
@@ -56,36 +51,86 @@ public class Mp4Parser {
 		}
 	}
 
-	private boolean appendMovie(Mp4ParserProperty property) {
+	private boolean convertMedia(Mp4ParserProperty property) {
+
 		if (property == null)
 			return false;
-		if (property.checkNotNullForAppend())
+		if (property.getJobType() == Mp4ParserProperty.JOB_TYPE_APPEND && property.checkNotNullForAppend())
+			return false;
+		if (property.getJobType() == Mp4ParserProperty.JOB_TYPE_ADDBGM && property.checkNotNullForAddBgm())
 			return false;
 
+		List<Track> audioTracks;
+		List<Track> videoTracks;
 
-		List<Movie> inMovies = new ArrayList<Movie>();
-		for (String videoUri : property.videoList) {
-			try {
-				inMovies.add(MovieCreator.build(videoUri));
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
+		switch (property.getJobType()){
+			case Mp4ParserProperty.JOB_TYPE_APPEND:
+			{
+				List<Movie> inMovies = fileToMoveList(property.getVideoList());
+				audioTracks = getVideoTrackFromMovieList(inMovies);
+				videoTracks = getAudioTrackFromMovieList(inMovies);
+				break;
 			}
+			case Mp4ParserProperty.JOB_TYPE_ADDBGM:
+			{
+				List<Movie> videos = fileToMoveList(property.getVideoList());
+				List<Movie> audios = fileToMoveList(property.getAudioList());
+				audioTracks = getVideoTrackFromMovieList(videos);
+				videoTracks = getAudioTrackFromMovieList(audios);
+				break;
+			}
+
+			default:
+				return false;
 		}
 
-		List<Track> videoTracks = new LinkedList<Track>();
-		List<Track> audioTracks = new LinkedList<Track>();
+		Movie result = makeMovieFromTrack(videoTracks, audioTracks);
+		Container container = new DefaultMp4Builder().build(result);
+		if (saveOutputfile(property.getOutPath(), container) == false) {
+			return false;
+		}
+		return true;
+	}
 
-		for (Movie m : inMovies) {
+	private List<Movie> fileToMoveList(ArrayList<String> sources){
+
+		List<Movie> inMovies = new ArrayList<Movie>();
+		for (String src : sources) {
+			try {
+				inMovies.add(MovieCreator.build(src));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return inMovies;
+	}
+
+	private List<Track> getVideoTrackFromMovieList(List<Movie> movies) {
+		List<Track> videoTracks = new LinkedList<Track>();
+
+		for (Movie m : movies) {
 			for (Track t : m.getTracks()) {
-				if (t.getHandler().equals("soun")) {
-					audioTracks.add(t);
-				}
 				if (t.getHandler().equals("vide")) {
 					videoTracks.add(t);
 				}
 			}
 		}
+		return videoTracks;
+	}
+	private List<Track> getAudioTrackFromMovieList(List<Movie> movies) {
+		List<Track> audioTracks = new LinkedList<Track>();
+		for (Movie m : movies) {
+			for (Track t : m.getTracks()) {
+				if (t.getHandler().equals("soun")) {
+					audioTracks.add(t);
+				}
+			}
+		}
+		return audioTracks;
+	}
+
+	private Movie makeMovieFromTrack(List<Track> videoTracks, List<Track> audioTracks){
 
 		Movie result = new Movie();
 
@@ -94,7 +139,7 @@ public class Mp4Parser {
 				result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()])));
 			} catch (IOException e) {
 				e.printStackTrace();
-				return false;
+				return null;
 			}
 		}
 		if (!videoTracks.isEmpty()) {
@@ -102,72 +147,10 @@ public class Mp4Parser {
 				result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
 			} catch (IOException e) {
 				e.printStackTrace();
-				return false;
+				return null;
 			}
 		}
-
-		Container container = new DefaultMp4Builder().build(result);
-		if (saveOutputfile(property.outPath,container) == false){
-			return false;
-		}
-
-		return true;
-	}
-
-	private boolean addBgm(Mp4ParserProperty property) {
-		if (property == null)
-			return false;
-		if (property.checkNotNullForAddBgm()) {
-			return false;
-		}
-
-		List<Movie> inMovies = new ArrayList<Movie>();
-		for (String videoUri : property.videoList) {
-			try {
-				inMovies.add(MovieCreator.build(videoUri));
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-		}
-		List<Track> videoTracks = new LinkedList<Track>();
-		List<Track> audioTracks = new LinkedList<Track>();
-
-		for (Movie m : inMovies) {
-			for (Track t : m.getTracks()) {
-				if (t.getHandler().equals("vide")) {
-					videoTracks.add(t);
-				}
-			}
-		}
-		try {
-			Movie m4aAudio =  MovieCreator.build(property.bgm);
-			for (Track t : m4aAudio.getTracks()) {
-				if (t.getHandler().equals("soun")) {
-					audioTracks.add(t);
-				}
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		Movie result = new Movie();
-		try {
-			if (audioTracks.size() > 0){
-				result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()])));
-			}
-			if (videoTracks.size() > 0){
-				result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		Container container = new DefaultMp4Builder().build(result);
-		if (saveOutputfile(property.outPath,container) == false){
-			return false;
-		}
-		return true;
+		return result;
 	}
 
 	private boolean saveOutputfile(String outPath, Container outContainer)
@@ -175,8 +158,6 @@ public class Mp4Parser {
 		FileChannel fc = null;
 
 		try {
-//			String outPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/out.mp4";
-
 			fc = new RandomAccessFile(String.format(outPath), "rw").getChannel();
 			outContainer.writeContainer(fc);
 			fc.close();
@@ -206,30 +187,22 @@ public class Mp4Parser {
 //			return false;
 //		}
 	}
+
 	public class ConvertAsyncTask extends AsyncTask<Mp4ParserProperty, Integer, Void> {
 
-		private int mTaskType = Mp4ParserProperty.JOB_READY;
-
+		private int mTaskType = Mp4ParserProperty.JOB_TYPE_READY;
+		private Mp4ParserProperty mp4ParserProperty;
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			if(mTaskType == Mp4ParserProperty.JOB_APPEND)
-				mListener.onStartToAppend();
-			else if(mTaskType == Mp4ParserProperty.JOB_ADDBGM)
-				mListener.onStartToAddBgm();
+			mListener.onStart();
+
 		}
 
 		@Override
 		protected Void doInBackground(Mp4ParserProperty... property) {
-			mTaskType = property[0].type;
-			switch(property[0].type){
-				case Mp4ParserProperty.JOB_APPEND:
-					appendMovie(property[0]);
-					break;
-				case Mp4ParserProperty.JOB_ADDBGM:
-					addBgm(property[0]);
-					break;
-			}
+			mp4ParserProperty = property[0];
+			convertMedia(mp4ParserProperty);
 			return null;
 		}
 
@@ -237,61 +210,12 @@ public class Mp4Parser {
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 			mTask = null;
-			if(mTaskType == Mp4ParserProperty.JOB_APPEND)
-				mListener.onFininshToAppend();
-			else if(mTaskType == Mp4ParserProperty.JOB_ADDBGM)
-				mListener.onFininshToAddBgm();
-		}
-	}
-
-	public class Mp4ParserProperty {
-		private final static int JOB_READY = 0;
-		private final static int JOB_APPEND = 1;
-		private final static int JOB_ADDBGM = 2;
-
-		private ArrayList<String> videoList = null;
-		private String bgm = null;
-		private String outPath = null;
-		public int type = JOB_READY;
-
-		public Mp4ParserProperty(int type, String outPath, ArrayList<String> videoList)
-		{
-			this.type = type;
-			this.videoList = videoList;
-			this.outPath = outPath;
-		}
-
-		public Mp4ParserProperty(int type, String outPath, ArrayList<String> videoList,String bgm)
-		{
-			this.type = type;
-			this.videoList = videoList;
-			this.bgm = bgm;
-			this.outPath = outPath;
-		}
-
-		public boolean checkNotNullForAppend(){
-			if (videoList.isEmpty())
-				return true;
-			if (outPath == null)
-				return true;
-			return false;
-		}
-
-		public boolean checkNotNullForAddBgm(){
-			if (videoList.isEmpty()) {
-				return true;
-			}
-			if (bgm == null) {
-				return true;
-			}
-			if (outPath == null){
-				return true;
-			}
-			return false;
+			mListener.onFininsh(mp4ParserProperty.getJobType(),mp4ParserProperty.getOutPath());
 		}
 	}
 
 }
+
 
 //		String[] list = property.videoList.toArray(new String[property.videoList.size()]);
 

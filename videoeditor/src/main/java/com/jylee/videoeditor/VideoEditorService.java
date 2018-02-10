@@ -23,34 +23,40 @@ public class VideoEditorService implements Mp4ParserListener {
 	}
 
 	public void convert(String outputFile, ArrayList<String> videoList) {
-		mMp4Parser.startToAppend(outputFile, videoList);
+		mMp4Parser.run(outputFile, videoList,null);
 	}
 
-	public void convert(String outputFile, String video, String bgm ) {
-		mMp4Parser.startToAddBgm(outputFile, video, bgm);
+	public void convert(String outputFile, ArrayList<String> videoList, ArrayList<String> audioList) {
+		mMp4Parser.run(outputFile, videoList, audioList);
+	}
+
+	public void convert(String outputFile,  ArrayList<String> videoList, String audio) {
+		ArrayList<String> audioList = new ArrayList<String>();
+		audioList.add(audio);
+		mMp4Parser.run(outputFile, videoList, audioList);
+	}
+
+	public void convert(String outputFile, String video, String audio) {
+		ArrayList<String> audioList = new ArrayList<String>();
+		audioList.add(audio);
+		ArrayList<String> videoList = new ArrayList<String>();
+		videoList.add(video);
+		mMp4Parser.run(outputFile, videoList, audioList);
 	}
 
 	@Override
-	public void onStartToAppend() {
-		Log.d("TAG","start append");
+	public void onStart() {
+		Log.d("TAG","start converting");
 		mListener.onStartToConvert();
 
 	}
 
 	@Override
-	public void onFininshToAppend() {
-		Log.d("TAG","finish append");
-		mListener.onFininshToConvert();
-	}
-
-	@Override
-	public void onStartToAddBgm() {
-		Log.d("TAG","start addBgm");
-	}
-
-	@Override
-	public void onFininshToAddBgm() {
-		Log.d("TAG","finish addBgm");
+	public void onFininsh(int jobType,String outFile) {
+		Log.d("TAG","finish converting");
+		mListener.onStartToConvert();
 
 	}
+
+
 }

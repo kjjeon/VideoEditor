@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 
 				String all = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/4.mp4";
 //				mVideoEditor.convert(out, videoList);
-				mVideoEditor.convert(out, all, mp3);
+				mVideoEditor.convert(out, videoList,mp3);
+//				mVideoEditor.convert(out, all, mp3);
 			}
 		});
 	}

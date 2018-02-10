@@ -5,8 +5,6 @@ package com.jylee.videoeditor.mp4;
  */
 
 public interface Mp4ParserListener {
-		void onStartToAppend();
-		void onFininshToAppend();
-		void onStartToAddBgm();
-		void onFininshToAddBgm();
+		void onStart();
+		void onFininsh(int jobType,String outFile);
 }
