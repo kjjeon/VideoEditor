@@ -32,6 +32,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.googlecode.mp4parser:isoparser:1.1.21'
-//    compile 'com.mpatric:mp3agic:0.9.1'
-
+    compile 'com.writingminds:FFmpegAndroid:0.3.2'
+    compile 'com.google.guava:guava:20.+'
+    compile 'commons-io:commons-io:2.4'
 }

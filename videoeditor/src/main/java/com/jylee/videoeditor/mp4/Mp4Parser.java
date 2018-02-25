@@ -150,6 +150,16 @@ public class Mp4Parser {
 				return null;
 			}
 		}
+
+//		TextTrackImpl subTitleEng = new TextTrackImpl();
+//		subTitleEng.getTrackMetaData().setLanguage("kor");
+//
+//		subTitleEng.getSubs().add(new TextTrackImpl.Line(0, 1000, "Five"));
+//		subTitleEng.getSubs().add(new TextTrackImpl.Line(1000, 2000, "Four"));
+//		subTitleEng.getSubs().add(new TextTrackImpl.Line(2000, 3000, "Three"));
+//		subTitleEng.getSubs().add(new TextTrackImpl.Line(3000, 4000, "Two"));
+//		subTitleEng.getSubs().add(new TextTrackImpl.Line(4000, 5000, "one"));
+//		result.addTrack(subTitleEng);
 		return result;
 	}
 

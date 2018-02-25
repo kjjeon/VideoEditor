@@ -42,23 +42,32 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 			}
 		}
 
-		mVideoEditor = new VideoEditorService(this);
+		mVideoEditor = new VideoEditorService(getApplicationContext(),this);
 		binding.button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				ArrayList<String> videoList = new ArrayList<String>();
 
-				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/0.mp4");
-				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/1.mp4");
-				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/2.mp4");
-				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/3.mp4");
+				for(int i=0; i<5; i++){
+					String path = "/mp4parser/" +
+							String.valueOf(i) +
+							".mp4";
+
+					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
+				}
+//				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/0.mp4");
+//				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/1.mp4");
+//				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/2.mp4");
+//				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/3.mp4");
 				String out = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/out.mp4";
 				String mp3 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/0.m4a";
 
-				String all = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/4.mp4";
+				String all = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/a.mp4";
 //				mVideoEditor.convert(out, videoList);
-				mVideoEditor.convert(out, videoList,mp3);
+//				mVideoEditor.convert(out, videoList,mp3);
 //				mVideoEditor.convert(out, all, mp3);
+				mVideoEditor.drawText(out,all,"깜쭈야 일어나라");
+
 			}
 		});
 	}
