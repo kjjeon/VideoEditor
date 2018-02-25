@@ -7,4 +7,7 @@ package com.jylee.videoeditor;
 public interface VideoEditorServiceListener {
 	void onStartToConvert();
 	void onFininshToConvert();
+	void onProgressToConvert(int per);
+	void onErrorToConvert();
+
 }

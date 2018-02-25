@@ -64,10 +64,12 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 
 				String all = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/a.mp4";
 //				mVideoEditor.convert(out, videoList);
-				mVideoEditor.convert(all, videoList,mp3);
+//				mVideoEditor.convert(all, videoList,mp3);
 //				mVideoEditor.convert(out, all, mp3);
-				mVideoEditor.drawText(out,all,"깜쭈야 일어나라");
+//				mVideoEditor.drawText(out,all,"깜쭈야 일어나라");
 
+//				mVideoEditor.makeDayVideo(out,all,"꼬꼬꼬");
+				mVideoEditor.makeFullVideo(out,videoList,mp3,"하이 깜쭈");
 			}
 		});
 	}
@@ -81,4 +83,15 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 	public void onFininshToConvert() {
 		Toast.makeText(this, "finish converting ", Toast.LENGTH_LONG).show();
 	}
+
+	@Override
+	public void onErrorToConvert(){
+
+	}
+
+	@Override
+	public void onProgressToConvert(int per){
+
+	}
+
 }
