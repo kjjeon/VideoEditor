@@ -3,12 +3,10 @@ package com.jylee.videoeditor;
 import android.content.Context;
 import android.util.Log;
 
-import com.jylee.videoeditor.ffmpeg.FFmpegCmdPackage;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutor;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutorListener;
 import com.jylee.videoeditor.mp4.Mp4Parser;
 import com.jylee.videoeditor.mp4.Mp4ParserListener;
-import com.jylee.videoeditor.util.FontManager;
 
 import java.util.ArrayList;
 
@@ -28,8 +26,7 @@ public class VideoEditorService implements Mp4ParserListener,FFmpegExcutorListen
 		mContext = context;
 		mListener = listener;
 		mMp4Parser = new Mp4Parser(this);
-		FontManager.getInstance(context);
-		FontManager.getInstance().initNanumGothic(context);
+		FFmpegExcutor.getInstance(context);
 	}
 
 	public void convert(String outputFile, ArrayList<String> videoList) {
@@ -46,18 +43,27 @@ public class VideoEditorService implements Mp4ParserListener,FFmpegExcutorListen
 		mMp4Parser.run(outputFile, videoList, audioList);
 	}
 
-	public void drawText(String outputFile, String inputFile, String text) {
-
-		FFmpegExcutor.getInstance(mContext).run(FFmpegCmdPackage.getInstance().getToAddTextCmd(outputFile, inputFile, text ),this);
-//		FFmpegExcutor.getInstance(mContext).run(FFmpegCmdPackage.getInstance().getVersionCmd(),this);
-	}
-
 	public void convert(String outputFile, String video, String audio) {
 		ArrayList<String> audioList = new ArrayList<String>();
 		audioList.add(audio);
 		ArrayList<String> videoList = new ArrayList<String>();
 		videoList.add(video);
 		mMp4Parser.run(outputFile, videoList, audioList);
+	}
+
+	public void convert(String outputFile, String video, String audio, String text) {
+		ArrayList<String> audioList = new ArrayList<String>();
+		audioList.add(audio);
+		ArrayList<String> videoList = new ArrayList<String>();
+		videoList.add(video);
+		mMp4Parser.run(outputFile, videoList, audioList);
+
+	}
+
+	public void drawText(String outputFile, String inputFile, String text) {
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 640, 360);
+//		FFmpegExcutor.getInstance(mContext).run(FFmpegCmdPackage.getInstance().getToAddTextCmd(outputFile, inputFile, text ),this);
+		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 
 	//mp4parser

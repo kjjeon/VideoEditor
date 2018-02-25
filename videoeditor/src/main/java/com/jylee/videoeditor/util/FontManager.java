@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +18,15 @@ import java.io.OutputStream;
 public class FontManager {
 
 	private static final String TAG = "FontManager";
-	private static final String NAUM_GOTHIC = "NanumGothic.ttf";
+	private static final String ASSETS_FONT_ROOT = "fonts";
+
+	public static final String NAUM_GOTHIC = "NanumGothic.ttf";
+
 	private String mfontDirectory;
 
 	private static FontManager mInstance = null;
 	private FontManager(Context context){
-		makeFontFolder(context);
+		initFontFiles(context);
 	}
 	public static FontManager getInstance(Context context) {
 		if(mInstance == null) {
@@ -38,12 +40,78 @@ public class FontManager {
 		return mInstance;
 	}
 
-	public void initNanumGothic(Context context) {
-		assetsToInternalStorage(context, "fonts"+"/"+NAUM_GOTHIC);
+	public String getFontFilePath(String fontName) {
+		return mfontDirectory + "/" + fontName;
 	}
 
-	public String getNanumGothicPath() {
-		return mfontDirectory + "/" + NAUM_GOTHIC;
+	private void initFontFiles(Context context) {
+
+		makeFontFolder(context);
+
+		try {
+			AssetManager assetMgr = context.getAssets();
+			String[] rootList = assetMgr.list(ASSETS_FONT_ROOT);
+
+			for(String element : rootList) {
+				Log.d(TAG," element = " + element);
+				copyAssetAll(context, element);
+			}
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void copyAssetAll(Context context, String srcPath) {
+		AssetManager assetMgr = context.getAssets();
+		String assets[] = null;
+		try {
+			assets = assetMgr.list(ASSETS_FONT_ROOT + File.separator + srcPath);
+			if (assets.length == 0) {
+				copyFile(context,ASSETS_FONT_ROOT + File.separator + srcPath);
+			} else {
+				String destPath = context.getFilesDir().getAbsolutePath() + File.separator + srcPath;
+
+				File dir = new File(destPath);
+				if (!dir.exists())
+					dir.mkdir();
+				for (String element : assets) {
+					copyAssetAll(context,srcPath + File.separator + element);
+				}
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void copyFile(Context context, String srcFile) {
+		AssetManager assetMgr = context.getAssets();
+
+		InputStream is = null;
+		OutputStream os = null;
+		try {
+			String destFile = context.getFilesDir().getAbsolutePath() + File.separator + srcFile;
+			File file = new File(destFile);
+			if (file.exists()) return;
+
+ 			Log.d(TAG," copy srcFile = " + srcFile);
+			is = assetMgr.open(srcFile);
+			os = new FileOutputStream(destFile);
+
+			byte[] buffer = new byte[1024];
+			int read;
+			while ((read = is.read(buffer)) != -1) {
+				os.write(buffer, 0, read);
+			}
+			is.close();
+			os.flush();
+			os.close();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void makeFontFolder(Context context) {
@@ -56,6 +124,12 @@ public class FontManager {
 		}
 	}
 
+	@Deprecated
+	public void initNanumGothic(Context context) {
+		assetsToInternalStorage(context, "fonts"+"/"+NAUM_GOTHIC);
+	}
+
+	@Deprecated
 	private void assetsToInternalStorage(Context context, String src) {
 
 		AssetManager assetManager = context.getAssets();
@@ -75,42 +149,6 @@ public class FontManager {
 			} catch (Exception e) {
 				e.getMessage();
 			}
-		}
-	}
-
-	// If targetLocation does not exist, it will be created.
-	private void copyDirectory(File sourceLocation , File targetLocation)
-			throws IOException {
-
-		if (sourceLocation.isDirectory()) {
-			if (!targetLocation.exists() && !targetLocation.mkdirs()) {
-				throw new IOException("Cannot create dir " + targetLocation.getAbsolutePath());
-			}
-
-			String[] children = sourceLocation.list();
-			for (int i=0; i<children.length; i++) {
-				copyDirectory(new File(sourceLocation, children[i]),
-						new File(targetLocation, children[i]));
-			}
-		} else {
-
-			// make sure the directory we plan to store the recording in exists
-			File directory = targetLocation.getParentFile();
-			if (directory != null && !directory.exists() && !directory.mkdirs()) {
-				throw new IOException("Cannot create dir " + directory.getAbsolutePath());
-			}
-
-			InputStream in = new FileInputStream(sourceLocation);
-			OutputStream out = new FileOutputStream(targetLocation);
-
-			// Copy the bits from instream to outstream
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
 		}
 	}
 }

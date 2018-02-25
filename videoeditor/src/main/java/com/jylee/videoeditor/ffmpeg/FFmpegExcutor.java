@@ -8,6 +8,7 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+import com.jylee.videoeditor.util.FontManager;
 
 /**
  * Created by jooyoung on 2018-02-24.
@@ -16,6 +17,33 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 public class FFmpegExcutor {
 	private static FFmpegExcutor mInstance = null;
 	private FFmpeg mFFmpeg = null;
+	private FFmpegCmdPackage mFFmpegCmdPackage = null;
+
+	private FFmpegExcutor(Context context) {
+		mFFmpeg = FFmpeg.getInstance(context);
+		mFFmpegCmdPackage = new FFmpegCmdPackage();
+
+		try {
+			mFFmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+				@Override
+				public void onStart() {}
+
+				@Override
+				public void onFailure() {}
+
+				@Override
+				public void onSuccess() {}
+
+				@Override
+				public void onFinish() {}
+			});
+		} catch (FFmpegNotSupportedException e) {
+			// Handle if FFmpeg is not supported by device
+		}
+		//init font
+		FontManager.getInstance(context);
+	}
 
 	public static FFmpegExcutor getInstance(Context context) {
 		if(mInstance == null) {
@@ -25,9 +53,10 @@ public class FFmpegExcutor {
 	}
 	
 	@NonNull
-	public FFmpegExcutor getInstance() {
+	public static FFmpegExcutor getInstance() {
 		return mInstance;
 	}
+
 	public void run(String cmd, final FFmpegExcutorListener listener) {
 		String[] command = cmd.split(" ");
 		run(command,listener);
@@ -69,29 +98,8 @@ public class FFmpegExcutor {
 		}
 	}
 
-	private void CheckNotNull(FFmpegExcutor mInstance) {
-	}
-
-	private FFmpegExcutor(Context context) {
-		mFFmpeg = FFmpeg.getInstance(context);
-		try {
-			mFFmpeg.loadBinary(new LoadBinaryResponseHandler() {
-
-				@Override
-				public void onStart() {}
-
-				@Override
-				public void onFailure() {}
-
-				@Override
-				public void onSuccess() {}
-
-				@Override
-				public void onFinish() {}
-			});
-		} catch (FFmpegNotSupportedException e) {
-			// Handle if FFmpeg is not supported by device
-		}
+	public FFmpegCmdPackage getCmdPackage() {
+		return mFFmpegCmdPackage;
 	}
 }
 
