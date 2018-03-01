@@ -27,31 +27,36 @@ public class FFmpegExcutor {
 			mFFmpeg.loadBinary(new LoadBinaryResponseHandler() {
 
 				@Override
-				public void onStart() {}
+				public void onStart() {
+				}
 
 				@Override
-				public void onFailure() {}
+				public void onFailure() {
+				}
 
 				@Override
-				public void onSuccess() {}
+				public void onSuccess() {
+				}
 
 				@Override
-				public void onFinish() {}
+				public void onFinish() {
+				}
 			});
 		} catch (FFmpegNotSupportedException e) {
 			// Handle if FFmpeg is not supported by device
 		}
+
 		//init font
 		FontManager.getInstance(context);
 	}
 
 	public static FFmpegExcutor getInstance(Context context) {
-		if(mInstance == null) {
+		if (mInstance == null) {
 			mInstance = new FFmpegExcutor(context);
 		}
 		return mInstance;
 	}
-	
+
 	@NonNull
 	public static FFmpegExcutor getInstance() {
 		return mInstance;
@@ -59,7 +64,7 @@ public class FFmpegExcutor {
 
 	public void run(String cmd, final FFmpegExcutorListener listener) {
 		String[] command = cmd.split(" ");
-		run(command,listener);
+		run(command, listener);
 	}
 
 	public void run(final String[] cmd, final FFmpegExcutorListener listener) {

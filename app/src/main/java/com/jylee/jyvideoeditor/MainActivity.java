@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 			public void onClick(View view) {
 				ArrayList<String> videoList = new ArrayList<String>();
 
-				for(int i=0; i<20; i++){
+				for(int i=0; i<10; i++){
 					String path = "/mp4parser/" +
 							String.valueOf(i) +
 							".mp4";
@@ -61,15 +61,28 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/3.mp4");
 				String out = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/out.mp4";
 				String mp3 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/free.m4a";
-
-				String all = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/a.mp4";
+				String intro = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/12.mp4";
 //				mVideoEditor.convert(out, videoList);
 //				mVideoEditor.convert(all, videoList,mp3);
 //				mVideoEditor.convert(out, all, mp3);
 //				mVideoEditor.drawText(out,all,"깜쭈야 일어나라");
 
 //				mVideoEditor.makeDayVideo(out,all,"꼬꼬꼬");
-				mVideoEditor.makeFullVideo(out,videoList,mp3,"하이 깜쭈");
+//				mVideoEditor.makeFullVideo(out,videoList,mp3,"하이 깜쭈");
+
+//				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() +  "/mp4parser/a1.mp4");
+//				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() +  "/mp4parser/a2.mp4");
+//				for(int i=0; i<10; i++){
+//					String path = "/mp4parser/" +
+//							String.valueOf(i) +
+//							".mp4";
+//
+//					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
+//				}
+
+				mVideoEditor.makeVideo(out,intro,videoList,mp3,"롯데아울렛 가기 싫어");
+
+
 			}
 		});
 	}
