@@ -38,13 +38,16 @@ public class VideoEditorService implements FFmpegExcutorListener {
 	public  VideoEditorService(Context context, VideoEditorServiceListener listener) {
 		mContext = context;
 		mListener = listener;
-		VideoEditorMp4ParserListener videoEditorMp4ParserListener= new VideoEditorMp4ParserListener();
-		mMp4Parser = new Mp4Parser(videoEditorMp4ParserListener);
 		FFmpegExcutor.getInstance(context);
 		mProperty = new VideoEditorProperty("/storage/emulated/0/Download/mp4parser/");
+
+		//mp4parser
+		VideoEditorMp4ParserListener videoEditorMp4ParserListener= new VideoEditorMp4ParserListener();
+		mMp4Parser = new Mp4Parser(videoEditorMp4ParserListener);
+
 	}
 
-	public void makeVideo(String outputFile,String introFile,  ArrayList<String> videoList, String audio, String text)
+	public void makeVideo(String outputFile, String introFile,  ArrayList<String> videoList, String audio, String text)
 	{
 		if(mProperty.getStatus() == VideoEditorProperty.StateType.WATTING) {
 			mProperty.setStatus(VideoEditorProperty.StateType.GET_INFO);
@@ -53,10 +56,104 @@ public class VideoEditorService implements FFmpegExcutorListener {
 			mProperty.setOutput(outputFile);
 			mProperty.setAudio(audio);
 			mProperty.setText(text);
-			getInfo(outputFile);
+			getInfo(introFile);
 		}
 	}
 
+	//ffmpeg
+	@Override
+	public void onStart() {
+		Log.d(TAG,"start ffmpeg converting");
+		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO) {
+			mListener.onProgressToConvert(0);
+		}
+	}
+
+	@Override
+	public void onProgress(String message) {
+//		Log.d("TAG","onProgress = " +message);
+		if(mProperty.getStatus()  == VideoEditorProperty.StateType.ADD_TEXT) {
+			Log.d("TAG", "progress= " + parseProgressTime(message) + "/" + mProperty.getDuration());
+		}
+	}
+
+	@Override
+	public void onFailure(String message) {
+		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO){
+			mProperty.setDuration(parseDuration(message));
+		}
+//		Log.d("TAG","onFailure = " + message);
+	}
+
+	@Override
+	public void onSuccess(String message) {
+		Log.d(TAG,"onSuccess = " + message);
+	}
+
+	@Override
+	public void onFinish() {
+		Log.d(TAG,"onFinish");
+		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO){
+			mProperty.setStatus(VideoEditorProperty.StateType.ADD_TEXT);
+			drawText(mProperty.getMp4TempFile(), mProperty.getIntro(), mProperty.getText());
+		} else if(mProperty.getStatus()  == VideoEditorProperty.StateType.ADD_TEXT){
+			mProperty.setStatus(VideoEditorProperty.StateType.MERGE_VIDEO);
+			ArrayList <String> list = mProperty.getVideoList();
+			list.add(0,mProperty.getMp4TempFile());
+//			Log.d(TAG,"list = " + list.toString());
+			concetVideo(mProperty.getOutput(),list,mProperty.getAudio());
+//			convert(mProperty.getOutput(),list,mProperty.getAudio()); //mp4parser not used
+		}else {
+			mProperty.setStatus(VideoEditorProperty.StateType.WATTING);
+			mListener.onProgressToConvert(100);
+			Log.d(TAG,"finish ffmpeg converting");
+		}
+	}
+
+	@Override
+	public void onError(String exception) {
+		Log.d(TAG,"onError = " + exception);
+	}
+
+
+	private int parseDuration(String message) {
+		String[] lines = message.split(System.getProperty("line.separator"));
+		for(String  str : lines) {
+//			Log.d("kj","str= " + str);
+			Pattern word = Pattern.compile("Duration:");
+			Matcher match = word.matcher(str);
+			if(match.find()) {
+//				Log.d("kj","match= " + str);
+				String[] items = str.split(",");
+				String duration = items[0].split(": ")[1];
+//				Log.d("kj","duration= " + duration);
+//				int hour = Integer.parseInt(duration.substring(0, 2));
+				int minute = Integer.parseInt(duration.substring(3,5));
+				int sec = Integer.parseInt(duration.substring(6,8));
+				int msec = Integer.parseInt(duration.substring(9,11));
+//				Log.d("kj","m= " + minute +"s=" + sec +  "msec= " + msec);
+				return minute * 6000 + sec *100 + msec;
+			}
+		}
+		return 0;
+	}
+
+	private int parseProgressTime(String message) {
+		Pattern word = Pattern.compile("time=");
+		Matcher match = word.matcher(message);
+
+		if(match.find()) {
+//			Log.d("kj","time msg= " + message);
+			String progressTime = message.split("time=")[1];
+//			int hour = Integer.parseInt(progressTime.substring(0, 2));
+			int minute = Integer.parseInt(progressTime.substring(3,5));
+			int sec = Integer.parseInt(progressTime.substring(6,8));
+			int msec = Integer.parseInt(progressTime.substring(9,11));
+//			Log.d("kj","m= " + minute +"s=" + sec +  "msec= " + msec);
+			return minute *6000 +  sec * 100 + msec;
+		}
+		return 0;
+	}
 	private void getInfo(String fileName)
 	{
 		FFmpegExcutor.getInstance().run(FFmpegExcutor.getInstance().getCmdPackage().getInfo(fileName),this);
@@ -116,63 +213,6 @@ public class VideoEditorService implements FFmpegExcutorListener {
 		}
 	}
 
-	//ffmpeg
-	@Override
-	public void onStart() {
-		Log.d(TAG,"start ffmpeg converting");
-		mListener.onProgressToConvert(0);
-	}
-
-	@Override
-	public void onProgress(String message) {
-		Log.d("TAG","onProgress = " + message);
-	}
-
-	@Override
-	public void onFailure(String message) {
-		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO){
-			String[] lines = message.split(System.getProperty("line.separator"));
-			for(String  str : lines) {
-				Pattern word = Pattern.compile("Duration:");
-				Matcher match = word.matcher(str);
-				if(match.find()) {
-					Log.d("TAG"," str = " + str);
-					mProperty.setDuration(10);
-				}else {
-					mProperty.setDuration(-1);
-				}
-			}
-		}
-		Log.d("TAG","onFailure = " + message);
-	}
-
-	@Override
-	public void onSuccess(String message) {
-		Log.d(TAG,"onSuccess = " + message);
-	}
-
-	@Override
-	public void onFinish() {
-		Log.d(TAG,"onFinish");
-		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO){
-			mProperty.setStatus(VideoEditorProperty.StateType.ADD_TEXT);
-			drawText(mProperty.getMp4TempFile(), mProperty.getIntro(), mProperty.getText());
-		} else if(mProperty.getStatus()  == VideoEditorProperty.StateType.ADD_TEXT){
-			mProperty.setStatus(VideoEditorProperty.StateType.MERGE_VIDEO);
-			ArrayList <String> list = mProperty.getVideoList();
-			list.add(0,mProperty.getMp4TempFile());
-			Log.d(TAG,"list = " + list.toString());
-			concetVideo(mProperty.getOutput(),list,mProperty.getAudio());
-//			convert(mProperty.getOutput(),list,mProperty.getAudio());
-		}else {
-			mProperty.setStatus(VideoEditorProperty.StateType.WATTING);
-		}
-	}
-
-	@Override
-	public void onError(String exception) {
-		Log.d(TAG,"onError = " + exception);
-	}
 
 
 
