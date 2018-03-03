@@ -91,7 +91,8 @@ public class FFmpegCmdPackage {
 
 
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-vcodec","copy","-acodec","copy","-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
-		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
+		// ffmpeg info : if tbn 2997 -> video_track_timescale 2997. sample video is 2997 tbn.
+		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 
 		return cmd;
 	}

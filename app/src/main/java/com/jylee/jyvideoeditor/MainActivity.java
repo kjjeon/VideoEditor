@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
 //				}
 
-				mVideoEditor.makeVideo(out,intro,videoList,mp3,"롯데아울렛 가기 싫어");
+				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");
 
 
 			}
