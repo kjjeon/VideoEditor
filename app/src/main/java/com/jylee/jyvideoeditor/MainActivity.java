@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //
 //					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
 //				}
-
+				binding.progress.setMax(100);
 				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");
 
 
@@ -91,16 +91,22 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 	@Override
 	public void onStartToConvert() {
 		Toast.makeText(this, "start converting ", Toast.LENGTH_LONG).show();
+		binding.textView.setText("변환중..");
+		binding.progress.setProgress(0);
 	}
 
 	@Override
 	public void onFininshToConvert() {
+		binding.progress.setProgress(100);
+		binding.textView.setText("대기중..");
 		Toast.makeText(this, "finish converting ", Toast.LENGTH_LONG).show();
 	}
 
 	@Override
 	public void onProgressToConvert(int per){
+
 		Log.d("TAG", "progress = " + per);
+		binding.progress.setProgress(per);
 	}
 
 	@Override
