@@ -13,6 +13,7 @@ public class Mp4ParserProperty {
 
 	private ArrayList<String> videoList = null;
 	private ArrayList<String> audioList = null;
+	private boolean shortest = true;
 	private String outPath = null;
 	private int jobType = JOB_TYPE_READY;
 
@@ -29,6 +30,14 @@ public class Mp4ParserProperty {
 		this.videoList = videoList;
 		this.audioList = audioList;
 		this.outPath = outPath;
+	}
+
+	public boolean isShortest() {
+		return shortest;
+	}
+
+	public void setShortest(boolean shortest) {
+		this.shortest = shortest;
 	}
 
 	public ArrayList<String> getVideoList() {

@@ -1,6 +1,7 @@
 package com.jylee.videoeditor.mp4;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.authoring.Movie;
@@ -8,6 +9,7 @@ import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
+import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,7 +24,7 @@ import java.util.List;
  */
 
 public class Mp4Parser {
-
+	private static final String TAG = "Mp4Parser";
 	private ConvertAsyncTask mTask = null;
 	private Mp4ParserListener mListener  = null;
 
@@ -84,7 +86,7 @@ public class Mp4Parser {
 				return false;
 		}
 
-		Movie result = makeMovieFromTrack(videoTracks, audioTracks);
+		Movie result = makeMovieFromTrack(videoTracks, audioTracks, property.isShortest());
 		Container container = new DefaultMp4Builder().build(result);
 		if (saveOutputfile(property.getOutPath(), container) == false) {
 			return false;
@@ -130,26 +132,85 @@ public class Mp4Parser {
 		return audioTracks;
 	}
 
-	private Movie makeMovieFromTrack(List<Track> videoTracks, List<Track> audioTracks){
+	private Movie makeMovieFromTrack(List<Track> videoTracks, List<Track> audioTracks, boolean shortest){
 
 		Movie result = new Movie();
+		boolean editor = false;
+		if (shortest && !audioTracks.isEmpty() && !videoTracks.isEmpty()) {
+			if (!audioTracks.isEmpty() && !videoTracks.isEmpty()) {
+				try {
+					Track aTrack = new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()]));
+					Track vTrack = new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]));
 
-		if (!audioTracks.isEmpty()) {
-			try {
-				result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()])));
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
+					Log.d(TAG, "aTrack duration = " + aTrack.getDuration() +
+							"aTrack getTimescale = " + aTrack.getTrackMetaData().getTimescale() +
+							"a time = " + aTrack.getDuration()/aTrack.getTrackMetaData().getTimescale() +
+							"vTrack duration = " + vTrack.getDuration()+
+							"vTrack getTimescale = " + vTrack.getTrackMetaData().getTimescale()+
+							"v time = " + vTrack.getDuration()/vTrack.getTrackMetaData().getTimescale() );
+
+					Track sampleTrack;
+					long endTime;
+
+					if (aTrack.getDuration() > vTrack.getDuration()) {
+						sampleTrack = aTrack;
+						endTime = vTrack.getDuration()/vTrack.getTrackMetaData().getTimescale();
+						result.addTrack(vTrack);
+					} else {
+						sampleTrack = vTrack;
+						endTime = aTrack.getDuration()/aTrack.getTrackMetaData().getTimescale();
+						result.addTrack(aTrack);
+					}
+
+					long startTime = 0;
+					long currentSample = 0;
+					double currentTime = 0;
+					long startSample = -1;
+					long endSample = -1;
+
+					Log.d(TAG, "sampleTrack.getSampleDurations().length = " + sampleTrack.getSampleDurations().length);
+					for (int i = 0; i < sampleTrack.getSampleDurations().length; i++) {
+						if (currentTime <= startTime) {
+							// current sample is still before the new starttime
+							startSample = currentSample;
+						}
+						if (currentTime <= endTime) {
+							// current sample is after the new start time and still before the new endtime
+							endSample = currentSample;
+						} else {
+							// current sample is after the end of the cropped video
+							break;
+						}
+						currentTime += (double) sampleTrack.getSampleDurations()[i] / (double) sampleTrack.getTrackMetaData().getTimescale();
+						currentSample++;
+					}
+					Log.d(TAG, "endSample = " + endSample);
+					result.addTrack(new CroppedTrack(sampleTrack, startSample, endSample));
+
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+		} else {
+			if (!audioTracks.isEmpty()) {
+				try {
+					result.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()])));
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+			if (!videoTracks.isEmpty()) {
+				try {
+					result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null;
+				}
 			}
 		}
-		if (!videoTracks.isEmpty()) {
-			try {
-				result.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
+
 
 //		TextTrackImpl subTitleEng = new TextTrackImpl();
 //		subTitleEng.getTrackMetaData().setLanguage("kor");
