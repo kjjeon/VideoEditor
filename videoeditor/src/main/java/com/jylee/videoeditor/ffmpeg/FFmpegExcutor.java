@@ -103,6 +103,18 @@ public class FFmpegExcutor {
 		}
 	}
 
+	public boolean isRunning() {
+		return mFFmpeg.isFFmpegCommandRunning();
+	}
+
+	public boolean kill() {
+		return mFFmpeg.killRunningProcesses();
+	}
+
+	public void setTimeOut(long timeout) {
+		mFFmpeg.setTimeout(timeout);
+	}
+
 	public FFmpegCmdPackage getCmdPackage() {
 		return mFFmpegCmdPackage;
 	}

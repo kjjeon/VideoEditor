@@ -1,4 +1,4 @@
-package com.jylee.videoeditor;
+package com.jylee.videoeditor.custom;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by jooyoung on 2018-03-03.
  */
 
-public class VideoEditorProperty {
+public class ConcatTextVideoProperty {
 
 	public enum StateType {
 		WATTING, GET_INFO, ADD_TEXT, MERGE_VIDEO,
@@ -21,11 +21,12 @@ public class VideoEditorProperty {
 	private int duration;
 
 	//		private String makeFolder =  mContext.getFilesDir().getAbsolutePath() + "/" + "ffmpeg" + "/";
-	private String makeFolder =  "/storage/emulated/0/Download/mp4parser/" ;
-	private String tempMp4File =  makeFolder +  "temp.mp4";
+	private String makeFolder;
+	private String tempMp4File;
 
-	public VideoEditorProperty(String jobDirectory) {
+	public ConcatTextVideoProperty(String jobDirectory) {
 		makeFolder = jobDirectory;
+		tempMp4File =  makeFolder +  "temp.mp4";
 	}
 
 	public String getMakeFolder() {

@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -98,12 +99,12 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 	}
 
 	@Override
-	public void onErrorToConvert(){
-
+	public void onProgressToConvert(int per){
+		Log.d("TAG", "progress = " + per);
 	}
 
 	@Override
-	public void onProgressToConvert(int per){
+	public void onErrorToConvert(String message) {
 
 	}
 

@@ -8,6 +8,6 @@ public interface VideoEditorServiceListener {
 	void onStartToConvert();
 	void onFininshToConvert();
 	void onProgressToConvert(int per);
-	void onErrorToConvert();
+	void onErrorToConvert(String message);
 
 }

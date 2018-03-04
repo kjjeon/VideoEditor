@@ -1,268 +1,43 @@
 package com.jylee.videoeditor;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
 
+import com.jylee.videoeditor.custom.ConcatTextVideo;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutor;
-import com.jylee.videoeditor.ffmpeg.FFmpegExcutorListener;
-import com.jylee.videoeditor.mp4.Mp4Parser;
-import com.jylee.videoeditor.mp4.Mp4ParserListener;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * Created by jooyoung on 2018-02-03.
- * facade pattern
+ * Created by jooyoung on 2018-03-04.
  */
 
-public class VideoEditorService implements FFmpegExcutorListener {
-	private static final String TAG = "VideoEditorService";
+public class VideoEditorService {
 
 	private Context mContext = null;
-	private Mp4Parser mMp4Parser = null;
+	private ConcatTextVideo mConcatTextVideo = null;
 	private VideoEditorServiceListener mListener = null;
-	private VideoEditorProperty mProperty = null;
 
 
-	public  VideoEditorService(Context context, VideoEditorServiceListener listener) {
+	public VideoEditorService(Context context, VideoEditorServiceListener listener) {
 		mContext = context;
 		mListener = listener;
 		FFmpegExcutor.getInstance(context);
-		mProperty = new VideoEditorProperty("/storage/emulated/0/Download/mp4parser/");
-
-		//mp4parser
-		VideoEditorMp4ParserListener videoEditorMp4ParserListener= new VideoEditorMp4ParserListener();
-		mMp4Parser = new Mp4Parser(videoEditorMp4ParserListener);
-
+		mConcatTextVideo = new ConcatTextVideo("/storage/emulated/0/Download/mp4parser/",mListener);
 	}
 
-	public void makeVideo(String outputFile, String introFile,  ArrayList<String> videoList, String audio, String text)
+
+	public boolean makeVideo(String outputFile, String introFile, ArrayList<String> videoList, String audio, String text)
 	{
-		if(mProperty.getStatus() == VideoEditorProperty.StateType.WATTING) {
-			mProperty.setStatus(VideoEditorProperty.StateType.GET_INFO);
-			mProperty.setIntro(introFile);
-			mProperty.setVideoList(videoList);
-			mProperty.setOutput(outputFile);
-			mProperty.setAudio(audio);
-			mProperty.setText(text);
-			getInfo(introFile);
-		}
+		return mConcatTextVideo.makeVideo(outputFile, introFile, videoList, audio, text);
 	}
 
-	//ffmpeg
-	@Override
-	public void onStart() {
-		Log.d(TAG,"start ffmpeg converting");
-		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO) {
-			mListener.onProgressToConvert(0);
-		}
-	}
-
-	@Override
-	public void onProgress(String message) {
-//		Log.d("TAG","onProgress = " +message);
-		if(mProperty.getStatus()  == VideoEditorProperty.StateType.ADD_TEXT) {
-			Log.d("TAG", "progress= " + parseProgressTime(message) + "/" + mProperty.getDuration());
-		}
-	}
-
-	@Override
-	public void onFailure(String message) {
-		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO){
-			mProperty.setDuration(parseDuration(message));
-		}
-//		Log.d("TAG","onFailure = " + message);
-	}
-
-	@Override
-	public void onSuccess(String message) {
-		Log.d(TAG,"onSuccess = " + message);
-	}
-
-	@Override
-	public void onFinish() {
-		Log.d(TAG,"onFinish");
-		if(mProperty.getStatus()  == VideoEditorProperty.StateType.GET_INFO){
-			mProperty.setStatus(VideoEditorProperty.StateType.ADD_TEXT);
-			drawText(mProperty.getMp4TempFile(), mProperty.getIntro(), mProperty.getText());
-		} else if(mProperty.getStatus()  == VideoEditorProperty.StateType.ADD_TEXT){
-			mProperty.setStatus(VideoEditorProperty.StateType.MERGE_VIDEO);
-			ArrayList <String> list = mProperty.getVideoList();
-			list.add(0,mProperty.getMp4TempFile());
-//			Log.d(TAG,"list = " + list.toString());
-			concetVideo(mProperty.getOutput(),list,mProperty.getAudio());
-//			convert(mProperty.getOutput(),list,mProperty.getAudio()); //mp4parser not used
-		}else {
-			mProperty.setStatus(VideoEditorProperty.StateType.WATTING);
-			mListener.onProgressToConvert(100);
-			Log.d(TAG,"finish ffmpeg converting");
-		}
-	}
-
-	@Override
-	public void onError(String exception) {
-		Log.d(TAG,"onError = " + exception);
-	}
-
-
-	private int parseDuration(String message) {
-		String[] lines = message.split(System.getProperty("line.separator"));
-		for(String  str : lines) {
-//			Log.d("kj","str= " + str);
-			Pattern word = Pattern.compile("Duration:");
-			Matcher match = word.matcher(str);
-			if(match.find()) {
-//				Log.d("kj","match= " + str);
-				String[] items = str.split(",");
-				String duration = items[0].split(": ")[1];
-//				Log.d("kj","duration= " + duration);
-//				int hour = Integer.parseInt(duration.substring(0, 2));
-				int minute = Integer.parseInt(duration.substring(3,5));
-				int sec = Integer.parseInt(duration.substring(6,8));
-				int msec = Integer.parseInt(duration.substring(9,11));
-//				Log.d("kj","m= " + minute +"s=" + sec +  "msec= " + msec);
-				return minute * 6000 + sec *100 + msec;
-			}
-		}
-		return 0;
-	}
-
-	private int parseProgressTime(String message) {
-		Pattern word = Pattern.compile("time=");
-		Matcher match = word.matcher(message);
-
-		if(match.find()) {
-//			Log.d("kj","time msg= " + message);
-			String progressTime = message.split("time=")[1];
-//			int hour = Integer.parseInt(progressTime.substring(0, 2));
-			int minute = Integer.parseInt(progressTime.substring(3,5));
-			int sec = Integer.parseInt(progressTime.substring(6,8));
-			int msec = Integer.parseInt(progressTime.substring(9,11));
-//			Log.d("kj","m= " + minute +"s=" + sec +  "msec= " + msec);
-			return minute *6000 +  sec * 100 + msec;
-		}
-		return 0;
-	}
-	private void getInfo(String fileName)
+	public boolean isRunning()
 	{
-		FFmpegExcutor.getInstance().run(FFmpegExcutor.getInstance().getCmdPackage().getInfo(fileName),this);
+		return mConcatTextVideo.isRunning();
 	}
 
-
-	private void drawText(String outputFile, String inputFile, String text) {
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 1280, 720);
-//		FFmpegExcutor.getInstance(mContext).run(FFmpegCmdPackage.getInstance().getToAddTextCmd(outputFile, inputFile, text ),this);
-		FFmpegExcutor.getInstance().run(cmd,this);
+	public boolean stop()
+	{
+		return mConcatTextVideo.stop();
 	}
-
-	private void concetVideo(String outputFile, ArrayList<String> videoList, String mp3) {
-		StringBuffer fileList = new StringBuffer ();
-
-		for (String video : videoList){
-			File file = new File(video);
-			if(file.exists()) {
-				video = video.replace(mProperty.getMakeFolder(),"");
-				fileList.append("file \'");
-				fileList.append(video);
-				fileList.append("\'\n");
-			}
-		}
-
-		Log.d("TAG",fileList.toString());
-		writeFile(mProperty.getMakeFolder() +  "fflist.txt",fileList.toString());
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getConcatVideoCmd(outputFile,mProperty.getMakeFolder()+ "/" + "fflist.txt");
-		FFmpegExcutor.getInstance().run(cmd,this);
-
-	}
-
-	private void writeFile(String filePath ,String text) {
-		try {
-			File file = new File(filePath);
-			FileOutputStream outStream = new FileOutputStream(file);
-			outStream.write(text.getBytes());
-			outStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@RequiresApi(api = Build.VERSION_CODES.KITKAT)
-	private  void copy(File src, File dst) throws IOException {
-		try (InputStream in = new FileInputStream(src)) {
-			try (OutputStream out = new FileOutputStream(dst)) {
-				// Transfer bytes from in to out
-				byte[] buf = new byte[1024];
-				int len;
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-			}
-		}
-	}
-
-
-
-
-/*
-* mp4parser api
-* have not used this library.
- */
-
-	private void convert(String outputFile, ArrayList<String> videoList) {
-		mMp4Parser.run(outputFile, videoList,null);
-	}
-
-	private void convert(String outputFile, ArrayList<String> videoList, ArrayList<String> audioList) {
-		mMp4Parser.run(outputFile, videoList, audioList);
-	}
-
-	private void convert(String outputFile,  ArrayList<String> videoList, String audio) {
-		ArrayList<String> audioList = new ArrayList<String>();
-		audioList.add(audio);
-		mMp4Parser.run(outputFile, videoList, audioList);
-	}
-
-	private void convert(String outputFile, String video, String audio) {
-		ArrayList<String> audioList = new ArrayList<String>();
-		audioList.add(audio);
-		ArrayList<String> videoList = new ArrayList<String>();
-		videoList.add(video);
-		mMp4Parser.run(outputFile, videoList, audioList);
-	}
-
-	private void convert(String outputFile, String video, String audio, String text) {
-		ArrayList<String> audioList = new ArrayList<String>();
-		audioList.add(audio);
-		ArrayList<String> videoList = new ArrayList<String>();
-		videoList.add(video);
-		mMp4Parser.run(outputFile, videoList, audioList);
-	}
-
-
-	public class VideoEditorMp4ParserListener implements Mp4ParserListener {
-
-		@Override
-		public void onStart() {
-
-		}
-
-		@Override
-		public void onFininsh(int jobType, String outFile) {
-
-		}
-	}
-
 }
