@@ -24,11 +24,13 @@ public class ConcatTextVideoProperty {
 
 	//		private String makeFolder =  mContext.getFilesDir().getAbsolutePath() + "/" + "ffmpeg" + "/";
 	private String makeFolder;
-	private String tempMp4File;
+	private String mp4Step1File;
+	private String mp4Step2File;
 
 	public void setMakeFolder(String makeFolder) {
 		this.makeFolder = makeFolder;
-		this.tempMp4File = this.makeFolder + "/" +  "temp.mp4";
+		this.mp4Step1File = this.makeFolder + "/" +  "temp1.mp4";
+		this.mp4Step2File = this.makeFolder + "/" +  "temp2.mp4";
 	}
 
 	public String getMakeFolder() {
@@ -67,8 +69,12 @@ public class ConcatTextVideoProperty {
 		this.duration = duration;
 	}
 
-	public String getMp4TempFile() {
-		return tempMp4File;
+	public String getMp4Step1File() {
+		return mp4Step1File;
+	}
+
+	public String getMp4Step2File() {
+		return mp4Step2File;
 	}
 
 	public StateType getStatus() {

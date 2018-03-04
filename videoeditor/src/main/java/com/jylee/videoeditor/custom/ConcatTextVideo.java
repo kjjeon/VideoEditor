@@ -28,7 +28,11 @@ import java.util.regex.Pattern;
 
 public class ConcatTextVideo implements FFmpegExcutorListener {
 	private static final String TAG = "ConcatTextVideo";
-	private final int CONCAT_PER = 85; // 동영상 붙이기 까지 기준 표기 퍼센트
+	private final int FINISHED_ADD_TEXT_PER = 80;
+	private final int START_MERGE_VIDEO_PER = 85; // 동영상 붙이기 까지 기준 표기 퍼센트
+	private final int START_MERGE_AUDIO_PER = 90;
+	private final int START_REMOVE_TEMP_PER = 95;
+
 	private Mp4Parser mMp4Parser = null;
 	private VideoEditorServiceListener mListener = null;
 	private ConcatTextVideoProperty mProperty = null;
@@ -92,7 +96,9 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO) {
 			mListener.onProgressToConvert(0);
 		}else if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.MERGE_VIDEO) {
-			mListener.onProgressToConvert(CONCAT_PER);
+			mListener.onProgressToConvert(START_MERGE_VIDEO_PER);
+		}else if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.MERGE_AUDIO) {
+			mListener.onProgressToConvert(START_MERGE_AUDIO_PER);
 		}
 	}
 
@@ -101,7 +107,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 //		Log.d("TAG","onProgress = " +message);
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT) {
 			Log.d("TAG", "progress= " + parseProgressTime(message) + "/" + mProperty.getDuration());
-			mListener.onProgressToConvert((CONCAT_PER-10) * parseProgressTime(message)/mProperty.getDuration());
+			mListener.onProgressToConvert(FINISHED_ADD_TEXT_PER * parseProgressTime(message)/mProperty.getDuration());
 		}
 	}
 
@@ -125,17 +131,18 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		Log.d(TAG,"onFinish");
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.ADD_TEXT);
-			drawText(mProperty.getMp4TempFile(), mProperty.getIntro(), mProperty.getText());
+			drawText(mProperty.getMp4Step1File(), mProperty.getIntro(), mProperty.getText());
 		} else if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_VIDEO);
 			ArrayList <String> list = mProperty.getVideoList();
-			list.add(0,mProperty.getMp4TempFile());
+			list.add(0,mProperty.getMp4Step1File());
 //			Log.d(TAG,"list = " + list.toString());
-			concatVideo(mProperty.getOutput(),list,mProperty.getAudio());
+			concatVideo(mProperty.getMp4Step2File(),list);
 //			convert(mProperty.getOutput(),list,mProperty.getAudio()); //mp4parser not used
 		}else if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.MERGE_VIDEO){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_AUDIO);
-			convert(mProperty.getMakeFolder() + "/" + "out2.mp4",mProperty.getOutput(),mProperty.getAudio());
+//			mergeAudio(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio()); // ffmpeg 너무오래 걸림
+			convert(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio());
 		} else {
 			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");
@@ -149,9 +156,10 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	}
 
 	private void finishToConvert() {
-		int remainTime =  100 - CONCAT_PER;
-		mListener.onProgressToConvert(100 - remainTime/2);
-		File file = new File(mProperty.getMp4TempFile());
+		mListener.onProgressToConvert(START_REMOVE_TEMP_PER);
+		File file = new File(mProperty.getMp4Step1File());
+		if(file.exists()) file.delete();
+		file = new File(mProperty.getMp4Step2File());
 		if(file.exists()) file.delete();
 		file = new File(mProperty.getMakeFolder() + "/" +  "fflist.txt");
 		if(file.exists()) file.delete();
@@ -211,7 +219,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 
-	private void concatVideo(String outputFile, ArrayList<String> videoList, String mp3) {
+	private void concatVideo(String outputFile, ArrayList<String> videoList) {
 		StringBuffer fileList = new StringBuffer ();
 
 		File output = new File(outputFile);
@@ -237,6 +245,11 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getConcatVideoCmd(outputFile,mProperty.getMakeFolder()+ "/" + "fflist.txt");
 		FFmpegExcutor.getInstance().run(cmd,this);
 
+	}
+
+	private void mergeAudio(String outputFile, String inputFile, String audioFile) {
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToMergeAudio(outputFile,inputFile,audioFile);
+		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 
 	private void writeFile(String filePath ,String text) {
@@ -265,7 +278,6 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 			}
 		}
 	}
-
 
 
 
@@ -311,7 +323,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		public void onStart() {
 			if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.MERGE_VIDEO) {
 				Log.d(TAG,"start mp4parser converting");
-				mListener.onProgressToConvert(CONCAT_PER);
+				mListener.onProgressToConvert(START_MERGE_AUDIO_PER);
 			}
 		}
 

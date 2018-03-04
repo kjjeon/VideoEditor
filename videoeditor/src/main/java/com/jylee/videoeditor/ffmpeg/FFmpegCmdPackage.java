@@ -91,14 +91,16 @@ public class FFmpegCmdPackage {
 
 
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-vcodec","copy","-acodec","copy","-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
+//		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 		// ffmpeg info : if tbn 2997 -> video_track_timescale 2997. sample video is 2997 tbn.
-		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
+		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 
 		return cmd;
 	}
 
 	public String[] getToMergeAudio(String output, String input, String audio) {
-		String[] cmd = new String[]{"-i", input, "-i", output, "-map", "0:0", "-map", "1:0", "-shortest",  output};
+		//shortest 옵션은 input source 하나라도 끝나면 인코딩을 중지한다.
+		String[] cmd = new String[]{"-i", input, "-i", audio, "-map", "0:0", "-map", "1:0", "-shortest",  output};
 		return cmd;
 	}
 }
