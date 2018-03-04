@@ -19,7 +19,7 @@ public class ConcatTextVideoProperty {
 	private String audio;
 	private ArrayList<String> videoList;
 	private int duration;
-
+	private String videoTbr="";
 
 
 	//		private String makeFolder =  mContext.getFilesDir().getAbsolutePath() + "/" + "ffmpeg" + "/";
@@ -31,6 +31,14 @@ public class ConcatTextVideoProperty {
 		this.makeFolder = makeFolder;
 		this.mp4Step1File = this.makeFolder + "/" +  "temp1.mp4";
 		this.mp4Step2File = this.makeFolder + "/" +  "temp2.mp4";
+	}
+
+	public String getVideoTbr() {
+		return videoTbr;
+	}
+
+	public void setVideoTbr(String videoTbr) {
+		this.videoTbr = videoTbr;
 	}
 
 	public String getMakeFolder() {

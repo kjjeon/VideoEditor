@@ -143,11 +143,11 @@ public class Mp4Parser {
 					Track vTrack = new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()]));
 
 					Log.d(TAG, "aTrack duration = " + aTrack.getDuration() +
-							"aTrack getTimescale = " + aTrack.getTrackMetaData().getTimescale() +
-							"a time = " + aTrack.getDuration()/aTrack.getTrackMetaData().getTimescale() +
-							"vTrack duration = " + vTrack.getDuration()+
-							"vTrack getTimescale = " + vTrack.getTrackMetaData().getTimescale()+
-							"v time = " + vTrack.getDuration()/vTrack.getTrackMetaData().getTimescale() );
+							",aTrack getTimescale = " + aTrack.getTrackMetaData().getTimescale() +
+							",a time = " + aTrack.getDuration()/aTrack.getTrackMetaData().getTimescale() +
+							",vTrack duration = " + vTrack.getDuration()+
+							",vTrack getTimescale = " + vTrack.getTrackMetaData().getTimescale()+
+							",v time = " + vTrack.getDuration()/vTrack.getTrackMetaData().getTimescale() );
 
 					Track sampleTrack;
 					long endTime;

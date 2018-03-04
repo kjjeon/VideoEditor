@@ -106,8 +106,10 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	public void onProgress(String message) {
 //		Log.d("TAG","onProgress = " +message);
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT) {
-			Log.d("TAG", "progress= " + parseProgressTime(message) + "/" + mProperty.getDuration());
-			mListener.onProgressToConvert(FINISHED_ADD_TEXT_PER * parseProgressTime(message)/mProperty.getDuration());
+			int progressTime = parseProgressTime(message);
+			Log.d("TAG", "progress= " + progressTime + "/" + mProperty.getDuration());
+			if(progressTime != -1)
+				mListener.onProgressToConvert(FINISHED_ADD_TEXT_PER * progressTime/mProperty.getDuration());
 		}
 	}
 
@@ -115,8 +117,10 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	public void onFailure(String message) {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO){
 			mProperty.setDuration(parseDuration(message));
+			mProperty.setVideoTbr(parseTbr(message));
 		}
-//		Log.d("TAG","onFailure = " + message);
+
+		Log.d("TAG","onFailure = " + message);
 	}
 
 	@Override
@@ -131,7 +135,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		Log.d(TAG,"onFinish");
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.ADD_TEXT);
-			drawText(mProperty.getMp4Step1File(), mProperty.getIntro(), mProperty.getText());
+			drawText(mProperty.getMp4Step1File(), mProperty.getIntro(), mProperty.getText(),mProperty.getVideoTbr());
 		} else if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_VIDEO);
 			ArrayList <String> list = mProperty.getVideoList();
@@ -191,6 +195,46 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		return 0;
 	}
 
+	private String parseTbr(String message) {
+		String[] lines = message.split(System.getProperty("line.separator"));
+		for(String  str : lines) {
+//			Log.d(TAG,"str= " + str);
+			Pattern word = Pattern.compile("Video:");
+			Matcher match = word.matcher(str);
+			if(match.find()) {
+				Pattern word2 = Pattern.compile("tbr");
+				Matcher match2 = word2.matcher(str);
+				if(match2.find()){
+					str = str.substring(match2.start(),str.length());
+					String[] items = str.split(" ");
+					Log.d(TAG,"str=" + str);
+					Log.d(TAG,"items[1] =" +items[1]);
+					return items[1];
+				}
+
+//				Log.d(TAG,"match= " + str);
+//				int index = str.lastIndexOf("fps");
+//				if(index < str.length()) {
+//					str = str.substring(index,str.length());
+//					String[] items = str.split(" ");
+//					Pattern word2 = Pattern.compile("tbr");
+//					Matcher match2 = word2.matcher(str);
+//					if(match2.find()){
+//
+//						str = str.substring(index,str.length());
+//						Log.d(TAG,"match2  start =" + match2.start() );
+//						Log.d(TAG,"match2  group =" + match2.group());
+//					}
+//					//items[1] : fps item[3]: tbr ,item[5]:tbn
+//					Log.d(TAG,"str =" + str );
+//					Log.d(TAG,"items[3] =" + items[3] );
+//					return items[3];
+//				}
+			}
+		}
+		return "";
+	}
+
 	private int parseProgressTime(String message) {
 		Pattern word = Pattern.compile("time=");
 		Matcher match = word.matcher(message);
@@ -205,7 +249,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 //			Log.d(TAG,"m= " + minute +"s=" + sec +  "msec= " + msec);
 			return minute *6000 +  sec * 100 + msec;
 		}
-		return 0;
+		return -1;
 	}
 	private void getInfo(String fileName)
 	{
@@ -213,9 +257,13 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	}
 
 
+	private void drawText(String outputFile, String inputFile, String text, String tbr) {
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 1280, 720,tbr);
+		FFmpegExcutor.getInstance().run(cmd,this);
+	}
+
 	private void drawText(String outputFile, String inputFile, String text) {
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 1280, 720);
-//		FFmpegExcutor.getInstance().run(FFmpegCmdPackage.getInstance().getToAddTextCmd(outputFile, inputFile, text ),this);
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 1280, 720,"2997");
 		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 
