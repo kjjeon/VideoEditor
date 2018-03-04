@@ -97,5 +97,44 @@ public class FFmpegCmdPackage {
 		return cmd;
 	}
 
-
+	public String[] getToMergeAudio(String output, String input, String audio) {
+		String[] cmd = new String[]{"-i", input, "-i", output, "-map", "0:0", "-map", "1:0", "-shortest",  output};
+		return cmd;
+	}
 }
+
+
+//	There can be achieved without using map also.
+//
+//	ffmpeg -i video.mp4 -i audio.mp3 output.mp4
+//
+//	In case you want the output.mp4 to stop as soon as one of the input stops (audio/video) then use
+//
+//-shortest
+//
+//	For example: ffmpeg -i video.mp4 -i audio.mp3 -shortest output.mp4
+//
+//	This will make sure that the output stops as and when any one of the inputs is completed.
+//
+//	Since you have asked that you want to do it with map. this is how you do it:
+//
+//	ffmpeg -i video.mp4 -i audio.mp3 -map 0:0 -map 1:0 -shortest output.mp4
+//
+//	Now, since you want to retain the audio of the video file, consider you want to merge audio.mp3 and  video.mp4. These are the steps:
+//
+//	Extract audio from the video.mp4
+//	ffmpeg -i video.mp4 1.mp3
+//
+//	Merge both audio.mp3 and 1.mp3
+//	ffmpeg -i audio.mp3 -i 1.mp3  -filter_complex amerge -c:a libmp3lame -q:a 4 audiofinal.mp3
+//
+//	Remove the audio from video.mp4 (this step is not required. but just to do it properly)
+//	ffmpeg -i video.mp4 -an videofinal.mp4
+//
+//	Now merge audiofinal.mp3 and videofinal.mp4
+//	ffmpeg  -i videofinal.mp4 -i audiofinal.mp3 -shortest final.mp4
+//
+//	note: in the latest version of ffmpeg it will only prompt you to use '-strict -2' in case it does then use this:
+//
+//	ffmpeg  -i videofinal.mp4 -i audiofinal.mp3 -shortest -strict -2 final.mp4
+

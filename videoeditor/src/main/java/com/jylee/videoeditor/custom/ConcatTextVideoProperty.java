@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ConcatTextVideoProperty {
 
 	public enum StateType {
-		WATTING, GET_INFO, ADD_TEXT, MERGE_VIDEO,
+		WATTING, GET_INFO, ADD_TEXT, MERGE_VIDEO, MERGE_AUDIO,
 	}
 
 	private StateType status = StateType.WATTING;
@@ -20,13 +20,15 @@ public class ConcatTextVideoProperty {
 	private ArrayList<String> videoList;
 	private int duration;
 
+
+
 	//		private String makeFolder =  mContext.getFilesDir().getAbsolutePath() + "/" + "ffmpeg" + "/";
 	private String makeFolder;
 	private String tempMp4File;
 
-	public ConcatTextVideoProperty(String jobDirectory) {
-		makeFolder = jobDirectory;
-		tempMp4File =  makeFolder +  "temp.mp4";
+	public void setMakeFolder(String makeFolder) {
+		this.makeFolder = makeFolder;
+		this.tempMp4File = this.makeFolder + "/" +  "temp.mp4";
 	}
 
 	public String getMakeFolder() {
@@ -67,10 +69,6 @@ public class ConcatTextVideoProperty {
 
 	public String getMp4TempFile() {
 		return tempMp4File;
-	}
-
-	public void setMp4TempFile(String tempFile) {
-		this.tempMp4File = tempFile;
 	}
 
 	public StateType getStatus() {

@@ -28,15 +28,15 @@ import java.util.regex.Pattern;
 
 public class ConcatTextVideo implements FFmpegExcutorListener {
 	private static final String TAG = "ConcatTextVideo";
-	private final int CONCAT_PER = 90; // 동영상 붙이기 까지 기준 표기 퍼센트
+	private final int CONCAT_PER = 85; // 동영상 붙이기 까지 기준 표기 퍼센트
 	private Mp4Parser mMp4Parser = null;
 	private VideoEditorServiceListener mListener = null;
 	private ConcatTextVideoProperty mProperty = null;
 
 
-	public ConcatTextVideo(String baseDirectory, VideoEditorServiceListener listener) {
+	public ConcatTextVideo(VideoEditorServiceListener listener) {
 		mListener = listener;
-		mProperty = new ConcatTextVideoProperty(baseDirectory);
+		mProperty = new ConcatTextVideoProperty();
 
 		//mp4parser
 		VideoEditorMp4ParserListener videoEditorMp4ParserListener= new VideoEditorMp4ParserListener();
@@ -47,8 +47,13 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	public boolean makeVideo(String outputFile, String introFile,  ArrayList<String> videoList, String audio, String text)
 	{
 		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
-			mListener.onStartToConvert();
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.GET_INFO);
+			mListener.onStartToConvert();
+
+			File output = new File(outputFile);
+			String parentDirName = output.getAbsoluteFile().getParent();
+			Log.d(TAG,"parentDirName = " + parentDirName);
+			mProperty.setMakeFolder(parentDirName);
 			mProperty.setIntro(introFile);
 			mProperty.setVideoList(videoList);
 			mProperty.setOutput(outputFile);
@@ -68,7 +73,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		return true;
 	}
 
-	public boolean stop() {
+	public boolean cancel() {
 		if(mProperty.getStatus() != ConcatTextVideoProperty.StateType.WATTING || FFmpegExcutor.getInstance().isRunning() == true){
 			if(FFmpegExcutor.getInstance().isRunning() == true ) {
 				FFmpegExcutor.getInstance().kill();
@@ -128,10 +133,11 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 //			Log.d(TAG,"list = " + list.toString());
 			concatVideo(mProperty.getOutput(),list,mProperty.getAudio());
 //			convert(mProperty.getOutput(),list,mProperty.getAudio()); //mp4parser not used
-		}else {
-			mProperty.setStatus(ConcatTextVideoProperty.StateType.WATTING);
-			mListener.onProgressToConvert(100);
-			mListener.onFininshToConvert();
+		}else if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.MERGE_VIDEO){
+			mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_AUDIO);
+			convert(mProperty.getMakeFolder() + "/" + "out2.mp4",mProperty.getOutput(),mProperty.getAudio());
+		} else {
+			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");
 		}
 	}
@@ -142,6 +148,18 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		Log.d(TAG,"onError = " + exception);
 	}
 
+	private void finishToConvert() {
+		int remainTime =  100 - CONCAT_PER;
+		mListener.onProgressToConvert(100 - remainTime/2);
+		File file = new File(mProperty.getMp4TempFile());
+		if(file.exists()) file.delete();
+		file = new File(mProperty.getMakeFolder() + "/" +  "fflist.txt");
+		if(file.exists()) file.delete();
+
+		mProperty.setStatus(ConcatTextVideoProperty.StateType.WATTING);
+		mListener.onProgressToConvert(100);
+		mListener.onFininshToConvert();
+	}
 
 	private int parseDuration(String message) {
 		String[] lines = message.split(System.getProperty("line.separator"));
@@ -199,6 +217,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		File output = new File(outputFile);
 		String parentDirName = output.getAbsoluteFile().getParent();
 		Log.d(TAG,"parentDirName = " + parentDirName);
+		mProperty.setMakeFolder(parentDirName);
 
 		for (String video : videoList){
 			File file = new File(video);
@@ -207,8 +226,6 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 				String base = parentDirName;
 				String relative = new File(base).toURI().relativize(new File(path).toURI()).getPath();
 
-//				video = video.replace(mProperty.getMakeFolder(),"");
-
 				fileList.append("file \'");
 				fileList.append(relative);
 				fileList.append("\'\n");
@@ -216,7 +233,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		}
 
 		Log.d("TAG",fileList.toString());
-		writeFile(mProperty.getMakeFolder() +  "fflist.txt",fileList.toString());
+		writeFile(mProperty.getMakeFolder() + "/" +  "fflist.txt",fileList.toString());
 		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getConcatVideoCmd(outputFile,mProperty.getMakeFolder()+ "/" + "fflist.txt");
 		FFmpegExcutor.getInstance().run(cmd,this);
 
@@ -254,7 +271,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 
 /*
 * mp4parser api
-* have not used this library.
+*
  */
 
 	private void convert(String outputFile, ArrayList<String> videoList) {
@@ -292,12 +309,16 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 
 		@Override
 		public void onStart() {
-
+			if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.MERGE_VIDEO) {
+				Log.d(TAG,"start mp4parser converting");
+				mListener.onProgressToConvert(CONCAT_PER);
+			}
 		}
 
 		@Override
 		public void onFininsh(int jobType, String outFile) {
-
+			finishToConvert();
+			Log.d(TAG,"finish mp4parser converting");
 		}
 	}
 

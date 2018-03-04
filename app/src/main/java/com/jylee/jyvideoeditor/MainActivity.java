@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 				ArrayList<String> videoList = new ArrayList<String>();
 
 				for(int i=0; i<10; i++){
-					String path = "/mp4parser/" +
+					String path = "/mp4parser/make/" +
 							String.valueOf(i) +
 							".mp4";
 
