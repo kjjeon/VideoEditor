@@ -258,12 +258,14 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 
 
 	private void drawText(String outputFile, String inputFile, String text, String tbr) {
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 1280, 720,tbr);
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
+				72, 52, 50,"white", 0, 0, 1280, 720,tbr);
 		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 
 	private void drawText(String outputFile, String inputFile, String text) {
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text, 72, 52, 50,"white", 0, 5, 1280, 720,"2997");
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
+				72, 52, 50,"white", 0, 0, 1280, 720,"2997");
 		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 

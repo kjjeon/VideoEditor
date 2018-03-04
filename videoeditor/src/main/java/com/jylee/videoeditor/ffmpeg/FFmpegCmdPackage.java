@@ -75,14 +75,15 @@ public class FFmpegCmdPackage {
 		StringBuffer textBody = new StringBuffer ();
 
 		textBody.append("drawtext=");
+		if(endTime != 0)
+			textBody.append("enable=").append("'between(t,"+String.valueOf(startTime)+","+String.valueOf(endTime)+")'").append(":");
 		textBody.append("text=").append(text).append(":");
 		textBody.append("fontsize=").append(String.valueOf(fontsize)).append(":");
 //		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
 		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_GOTHIC)).append(":");
 		textBody.append("fontcolor=").append(fontColor).append(":");
 		textBody.append("x=").append(String.valueOf(x)).append(":");
-		textBody.append("y=").append(String.valueOf(y)).append(":");
-		textBody.append("enable=").append("'between(t,"+String.valueOf(startTime)+","+String.valueOf(endTime)+")'");
+		textBody.append("y=").append(String.valueOf(y));
 
 		String preset = "medium"; // ultrafast,superfast,veryfast,faster,fast,medium,slow,slower,veryslow,placebo
 		String resolution = String.valueOf(width) + "x" + String.valueOf(height);// 16:9 --> 1920x1080,1280x720,640x360,480x270
@@ -97,7 +98,9 @@ public class FFmpegCmdPackage {
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-vcodec","copy","-acodec","copy","-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 		// ffmpeg info : if tbn 2997 -> video_track_timescale 2997. sample video is 2997 tbn.
-		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale",tbr, "-strict", "-2", "-preset", preset, "-s", resolution, output};
+		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),
+				"-video_track_timescale",tbr, "-strict", "-2",
+				"-preset", preset, "-s", resolution, output};
 
 		return cmd;
 	}
