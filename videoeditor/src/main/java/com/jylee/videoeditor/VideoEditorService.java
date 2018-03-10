@@ -25,18 +25,22 @@ public class VideoEditorService {
 		mConcatTextVideo = new ConcatTextVideo(mListener);
 	}
 
-	/**
-	 *
-	 * @param outputFile output file 절대 경로
-	 * @param introFile intro file 절대 경로
-	 * @param videoList 합쳐질 비디오 절대 경로 (단 ffmpeg lib 사용 시 output file  경로 보다 상위 폴더에 있으면 안된다. 동일 폴더 또는 하위 폴더로 위치)
-	 * @param audio 배경음악 음원 절대 경로
-	 * @param text intro Video 에 추가 될 text
-	 * @return false : 이미 사용중 , true: 변환 진행
-	 */
-	public boolean makeVideo(String outputFile, String introFile, ArrayList<String> videoList, String audio, String text)
+
+	public boolean makeVideo(String rootDirectory, String outputName , String introName, String text)
 	{
-		return mConcatTextVideo.makeVideo(outputFile, introFile, videoList, audio, text);
+		//TODO: intro file path
+//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
+		String introAbsFileName =introName;
+
+		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", text);
+	}
+
+	public boolean makeVideo(String rootDirectory, String outputName , String introName, String audioName , String text)
+	{
+		//TODO: intro file path
+//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
+		String introAbsFileName =introName;
+		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, audioName, text);
 	}
 
 	/**
@@ -55,5 +59,19 @@ public class VideoEditorService {
 	public boolean cancel()
 	{
 		return mConcatTextVideo.cancel();
+	}
+
+	/**
+	 *
+	 * @param outputAbsFilePath output file 절대 경로
+	 * @param introAbsFilePath intro file 절대 경로
+	 * @param videoAbsFileList 합쳐질 비디오 절대 경로 (단 ffmpeg lib 사용 시 output file  경로 보다 상위 폴더에 있으면 안된다. 동일 폴더 또는 하위 폴더로 위치)
+	 * @param audioAbsFilePath 배경음악 음원 절대 경로
+	 * @param text intro Video 에 추가 될 text
+	 * @return false : 이미 사용중 , true: 변환 진행
+	 */
+	public boolean makeVideo(String outputAbsFilePath, String introAbsFilePath,  ArrayList<String> videoAbsFileList, String audioAbsFilePath, String text)
+	{
+		return mConcatTextVideo.makeVideo(outputAbsFilePath, introAbsFilePath, videoAbsFileList, audioAbsFilePath, text);
 	}
 }

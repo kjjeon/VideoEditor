@@ -16,8 +16,6 @@ import com.jylee.jyvideoeditor.databinding.ActivityMainBinding;
 import com.jylee.videoeditor.VideoEditorService;
 import com.jylee.videoeditor.VideoEditorServiceListener;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity implements VideoEditorServiceListener {
 
 	private VideoEditorService mVideoEditor;
@@ -47,22 +45,22 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 		binding.button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				ArrayList<String> videoList = new ArrayList<String>();
-
-				for(int i=0; i<10; i++){
-					String path = "/mp4parser/make/" +
-							String.valueOf(i) +
-							".mp4";
-
-					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
-				}
+//				ArrayList<String> videoList = new ArrayList<String>();
+//
+//				for(int i=0; i<10; i++){
+//					String path = "/mp4parser/make/" +
+//							String.valueOf(i) +
+//							".mp4";
+//
+//					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
+//				}
 //				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/0.mp4");
 //				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/1.mp4");
 //				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/2.mp4");
 //				videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/3.mp4");
-				String out = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/out.mp4";
-				String mp3 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/free.m4a";
-				String intro = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/12.mp4";
+//				String out = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/out.mp4";
+//				String mp3 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/free.m4a";
+//				String intro = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/12.mp4";
 //				mVideoEditor.convert(out, videoList);
 //				mVideoEditor.convert(all, videoList,mp3);
 //				mVideoEditor.convert(out, all, mp3);
@@ -81,7 +79,14 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
 //				}
 				binding.progress.setMax(100);
-				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");
+				mVideoEditor.makeVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+						"day_1.mp4",
+						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/intro.mp4",
+						"free.m4a",
+						"S9 사주세요."
+				);
+
+//				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");
 
 
 			}

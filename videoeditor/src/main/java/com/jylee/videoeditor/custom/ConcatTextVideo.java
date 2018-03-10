@@ -45,25 +45,41 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		//mp4parser
 		VideoEditorMp4ParserListener videoEditorMp4ParserListener= new VideoEditorMp4ParserListener();
 		mMp4Parser = new Mp4Parser(videoEditorMp4ParserListener);
-
 	}
 
-	public boolean makeVideo(String outputFile, String introFile,  ArrayList<String> videoList, String audio, String text)
+	public boolean makeVideo(String rootDirectory, String outputName , String introAbsFileName, String audioName , String text) {
+		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
+			mProperty.setCustomRuleDefault(rootDirectory, outputName, introAbsFileName, audioName, text);
+			if(mProperty.getVideoList().isEmpty()) {
+				return false;
+			}else {
+				mListener.onStartToConvert();
+				getInfo(introAbsFileName);
+				return true;
+			}
+
+
+		}else {
+			return false;
+		}
+	}
+
+	public boolean makeVideo(String outputAbsFilePath, String introAbsFilePath,  ArrayList<String> videoAbsFileList, String audioAbsFilePath, String text)
 	{
 		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
-			mProperty.setStatus(ConcatTextVideoProperty.StateType.GET_INFO);
-			mListener.onStartToConvert();
-
-			File output = new File(outputFile);
+			File output = new File(outputAbsFilePath);
 			String parentDirName = output.getAbsoluteFile().getParent();
 			Log.d(TAG,"parentDirName = " + parentDirName);
 			mProperty.setMakeFolder(parentDirName);
-			mProperty.setIntro(introFile);
-			mProperty.setVideoList(videoList);
-			mProperty.setOutput(outputFile);
-			mProperty.setAudio(audio);
+			mProperty.setIntro(introAbsFilePath);
+			mProperty.setVideoList(videoAbsFileList);
+			mProperty.setOutput(outputAbsFilePath);
+			mProperty.setAudio(audioAbsFilePath);
 			mProperty.setText(text);
-			getInfo(introFile);
+
+			mListener.onStartToConvert();
+			getInfo(introAbsFilePath);
+
 			return true;
 		}else {
 			return false;
@@ -144,9 +160,20 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 			concatVideo(mProperty.getMp4Step2File(),list);
 //			convert(mProperty.getOutput(),list,mProperty.getAudio()); //mp4parser not used
 		}else if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.MERGE_VIDEO){
-			mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_AUDIO);
+			if(mProperty.getAudio() == ""){
+				finishToConvert();
+				Log.d(TAG,"finish ffmpeg converting");
+			}else{
+				mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_AUDIO);
 //			mergeAudio(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio()); // ffmpeg 너무오래 걸림
-			convert(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio());
+				File step2 = new File(mProperty.getMp4Step2File());
+				File audio = new File(mProperty.getAudio());
+				if(step2.exists() == false || audio.exists()  == false) {
+					finishToConvert();
+					mListener.onErrorToConvert("no such file or directory");
+				}
+				convert(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio());
+			}
 		} else {
 			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");
@@ -253,6 +280,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	}
 	private void getInfo(String fileName)
 	{
+		mProperty.setStatus(ConcatTextVideoProperty.StateType.GET_INFO);
 		FFmpegExcutor.getInstance().run(FFmpegExcutor.getInstance().getCmdPackage().getInfo(fileName),this);
 	}
 
@@ -272,16 +300,16 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	private void concatVideo(String outputFile, ArrayList<String> videoList) {
 		StringBuffer fileList = new StringBuffer ();
 
-		File output = new File(outputFile);
-		String parentDirName = output.getAbsoluteFile().getParent();
-		Log.d(TAG,"parentDirName = " + parentDirName);
-		mProperty.setMakeFolder(parentDirName);
+//		File output = new File(outputFile);
+//		String parentDirName = output.getAbsoluteFile().getParent();
+//		Log.d(TAG,"parentDirName = " + parentDirName);
+//		mProperty.setMakeFolder(parentDirName);
 
 		for (String video : videoList){
 			File file = new File(video);
 			if(file.exists()) {
 				String path = video;
-				String base = parentDirName;
+				String base = mProperty.getMakeFolder();
 				String relative = new File(base).toURI().relativize(new File(path).toURI()).getPath();
 
 				fileList.append("file \'");

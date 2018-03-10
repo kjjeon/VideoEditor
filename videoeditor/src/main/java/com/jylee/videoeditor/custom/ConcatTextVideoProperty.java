@@ -1,12 +1,18 @@
 package com.jylee.videoeditor.custom;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import lombok.Data;
 
 /**
  * Created by jooyoung on 2018-03-03.
  */
 
-public class ConcatTextVideoProperty {
+public @Data
+class ConcatTextVideoProperty {
 
 	public enum StateType {
 		WATTING, GET_INFO, ADD_TEXT, MERGE_VIDEO, MERGE_AUDIO,
@@ -17,9 +23,10 @@ public class ConcatTextVideoProperty {
 	private String output;
 	private String intro;
 	private String audio;
-	private ArrayList<String> videoList;
+	private ArrayList<String> videoList = new ArrayList<String>();
+
 	private int duration;
-	private String videoTbr="";
+	private String videoTbr=""; //video tbr info  for ffmpeg
 
 
 	//		private String makeFolder =  mContext.getFilesDir().getAbsolutePath() + "/" + "ffmpeg" + "/";
@@ -29,83 +36,37 @@ public class ConcatTextVideoProperty {
 
 	public void setMakeFolder(String makeFolder) {
 		this.makeFolder = makeFolder;
-		this.mp4Step1File = this.makeFolder + "/" +  "temp1.mp4";
-		this.mp4Step2File = this.makeFolder + "/" +  "temp2.mp4";
+		this.mp4Step1File = this.makeFolder + "/" +  "temp_step1.mp4";
+		this.mp4Step2File = this.makeFolder + "/" +  "temp_step2.mp4";
 	}
 
-	public String getVideoTbr() {
-		return videoTbr;
-	}
+	public void setCustomRuleDefault(String makeFolder, String output, String introAbsFileName, String audio, String text) {
+		this.makeFolder = makeFolder;
+		this.mp4Step1File = this.makeFolder + "/" +  "temp_step1.mp4";
+		this.mp4Step2File = this.makeFolder + "/" +  "temp_step2.mp4";
 
-	public void setVideoTbr(String videoTbr) {
-		this.videoTbr = videoTbr;
-	}
+		setMakeFolder(makeFolder);
+		setIntro(introAbsFileName);
+		setOutput(this.makeFolder + "/../" + output);
+		setAudio(this.makeFolder + "/" +audio);
+		setText(text);
 
-	public String getMakeFolder() {
-		return makeFolder;
-	}
 
-	public String getAudio() {
-		return audio;
-	}
+		File dir = new File(makeFolder);
 
-	public void setAudio(String audio) {
-		this.audio = audio;
-	}
+		File[] matchingFiles =dir.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+//				return name.startsWith("contents") && name.endsWith("mp4");
+				return  name.endsWith("mp4");
+			}
+		});
 
-	public ArrayList<String> getVideoList() {
-		return videoList;
-	}
-
-	public void setVideoList(ArrayList<String> videoList) {
-		this.videoList = videoList;
-	}
-
-	public String getIntro() {
-		return intro;
-	}
-
-	public void setIntro(String intro) {
-		this.intro = intro;
-	}
-
-	public int getDuration() {
-		return duration;
-	}
-
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-
-	public String getMp4Step1File() {
-		return mp4Step1File;
-	}
-
-	public String getMp4Step2File() {
-		return mp4Step2File;
-	}
-
-	public StateType getStatus() {
-		return status;
-	}
-
-	public void setStatus(StateType status) {
-		this.status = status;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public String getOutput() {
-		return output;
-	}
-
-	public void setOutput(String output) {
-		this.output = output;
+		videoList.clear();
+		if(matchingFiles != null) {
+			for (File file : matchingFiles) {
+				videoList.add(file.getAbsolutePath());
+			}
+			Collections.sort(videoList);
+		}
 	}
 }

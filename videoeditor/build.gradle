@@ -35,4 +35,7 @@ dependencies {
     compile 'com.writingminds:FFmpegAndroid:0.3.2'
     compile 'com.google.guava:guava:20.+'
     compile 'commons-io:commons-io:2.4'
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
+
 }
