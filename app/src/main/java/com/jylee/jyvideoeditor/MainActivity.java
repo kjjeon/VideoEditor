@@ -79,11 +79,17 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //					videoList.add(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + path);
 //				}
 				binding.progress.setMax(100);
+//				mVideoEditor.makeVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+//						"day_1.mp4",
+//						"intro.mp4",
+//						"free.m4a",
+//						"이건 파이널 영상 테스트 입니다. "
+//				);
+
 				mVideoEditor.makeVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
 						"day_1.mp4",
-						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/intro.mp4",
-						"free.m4a",
-						"S9 사주세요."
+						"intro.mp4",
+						"이건 데이영상 테스트 입니다. "
 				);
 
 //				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");

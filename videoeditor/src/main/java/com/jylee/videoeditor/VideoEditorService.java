@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jylee.videoeditor.custom.ConcatTextVideo;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutor;
+import com.jylee.videoeditor.util.IntroManager;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,9 @@ public class VideoEditorService {
 	public VideoEditorService(Context context, VideoEditorServiceListener listener) {
 		mContext = context;
 		mListener = listener;
+		//Init
 		FFmpegExcutor.getInstance(context);
+		IntroManager.getInstance(context);
 		mConcatTextVideo = new ConcatTextVideo(mListener);
 	}
 
@@ -30,8 +33,7 @@ public class VideoEditorService {
 	{
 		//TODO: intro file path
 //		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-		String introAbsFileName =introName;
-
+		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
 		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", text);
 	}
 
@@ -39,7 +41,7 @@ public class VideoEditorService {
 	{
 		//TODO: intro file path
 //		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-		String introAbsFileName =introName;
+		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
 		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, audioName, text);
 	}
 
