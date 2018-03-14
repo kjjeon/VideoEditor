@@ -49,7 +49,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 
 	public boolean makeVideo(String rootDirectory, String outputName , String introAbsFileName, String audioName , String text) {
 		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
-			mProperty.setCustomRuleDefault(rootDirectory, outputName, introAbsFileName, audioName, text);
+			mProperty.setCustomRuleDefault(rootDirectory, outputName, introAbsFileName, audioName, text,"","");
 			if(mProperty.getVideoList().isEmpty()) {
 				return false;
 			}else {
@@ -64,6 +64,25 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		}
 	}
 
+	public boolean makeVideo(String rootDirectory, String outputName , String introAbsFileName, String audioName , String id, String title) {
+		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
+			mProperty.setCustomRuleDefault(rootDirectory, outputName, introAbsFileName, audioName, id,title,"");
+			if(mProperty.getVideoList().isEmpty()) {
+				return false;
+			}else {
+				mListener.onStartToConvert();
+				getInfo(introAbsFileName);
+				return true;
+			}
+
+
+		}else {
+			return false;
+		}
+	}
+
+
+
 	public boolean makeVideo(String outputAbsFilePath, String introAbsFilePath,  ArrayList<String> videoAbsFileList, String audioAbsFilePath, String text)
 	{
 		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
@@ -75,7 +94,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 			mProperty.setVideoList(videoAbsFileList);
 			mProperty.setOutput(outputAbsFilePath);
 			mProperty.setAudio(audioAbsFilePath);
-			mProperty.setText(text);
+			mProperty.setText1(text);
 
 			mListener.onStartToConvert();
 			getInfo(introAbsFilePath);
@@ -85,6 +104,7 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 			return false;
 		}
 	}
+
 
 	public boolean isRunning() {
 		if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.WATTING) {
@@ -151,13 +171,22 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 		Log.d(TAG,"onFinish");
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.ADD_TEXT);
-			drawText(mProperty.getMp4Step1File(), mProperty.getIntro(), mProperty.getText(),mProperty.getVideoTbr());
+//			drawText(mProperty.getMp4Step1File(), mProperty.getIntro(), mProperty.getText(),mProperty.getVideoTbr());
+			drawText(mProperty.getMp4Step1File(), mProperty.getIntro(),
+					mProperty.getText1(),
+					mProperty.getText2(),
+					mProperty.getText3(),
+					mProperty.getVideoTbr());
 		} else if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_VIDEO);
 			ArrayList <String> list = mProperty.getVideoList();
 			list.add(0,mProperty.getMp4Step1File());
 //			Log.d(TAG,"list = " + list.toString());
-			concatVideo(mProperty.getMp4Step2File(),list);
+			if(mProperty.getAudio() == "") {
+				concatVideo(mProperty.getOutput(), list);
+			}else {
+				concatVideo(mProperty.getMp4Step2File(), list);
+			}
 //			convert(mProperty.getOutput(),list,mProperty.getAudio()); //mp4parser not used
 		}else if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.MERGE_VIDEO){
 			if(mProperty.getAudio() == ""){
@@ -285,17 +314,24 @@ public class ConcatTextVideo implements FFmpegExcutorListener {
 	}
 
 
-	private void drawText(String outputFile, String inputFile, String text, String tbr) {
+	private void drawText(String outputFile, String inputFile, String text, String tbn) {
+		if(tbn == "") tbn ="2997";
 		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
-				72, 52, 50,"white", 0, 0, 1280, 720,tbr);
+				72, 52, 50,"black", 0, 0, 1280, 720,tbn);
+//		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddCenterAlignTextCmd(outputFile, inputFile, text,
+//				72,"black", 0, 0,tbn);
+		FFmpegExcutor.getInstance().run(cmd,this);
+	}
+	private void drawText(String outputFile, String inputFile, String text1,String text2, String text3, String tbn) {
+		if(tbn == "") tbn ="2997";
+//		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
+//				72, 52, 50,"black", 0, 0, 1280, 720,tbr);
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddCenterAlignTextCmd(outputFile, inputFile,
+				30, text1,50,text2,50,text3,"black", 0, 0,tbn);
+
 		FFmpegExcutor.getInstance().run(cmd,this);
 	}
 
-	private void drawText(String outputFile, String inputFile, String text) {
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
-				72, 52, 50,"white", 0, 0, 1280, 720,"2997");
-		FFmpegExcutor.getInstance().run(cmd,this);
-	}
 
 	private void concatVideo(String outputFile, ArrayList<String> videoList) {
 		StringBuffer fileList = new StringBuffer ();

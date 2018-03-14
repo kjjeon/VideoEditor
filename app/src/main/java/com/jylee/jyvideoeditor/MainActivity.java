@@ -86,10 +86,16 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //						"이건 파이널 영상 테스트 입니다. "
 //				);
 
-				mVideoEditor.makeVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+//				mVideoEditor.makeVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+//						"day_1.mp4",
+//						"emblem.mp4",
+//						"이주영"
+//				);
+				mVideoEditor.makeEmblemVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
 						"day_1.mp4",
-						"intro.mp4",
-						"이건 데이영상 테스트 입니다. "
+						"emblem.mp4",
+						"이주영",
+						"나의 여행"
 				);
 
 //				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");

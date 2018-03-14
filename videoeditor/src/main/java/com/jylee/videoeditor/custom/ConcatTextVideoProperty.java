@@ -19,7 +19,9 @@ class ConcatTextVideoProperty {
 	}
 
 	private StateType status = StateType.WATTING;
-	private String text;
+	private String text1;
+	private String text2;
+	private String text3;
 	private String output;
 	private String intro;
 	private String audio;
@@ -40,7 +42,7 @@ class ConcatTextVideoProperty {
 		this.mp4Step2File = this.makeFolder + "/" +  "temp_step2.mp4";
 	}
 
-	public void setCustomRuleDefault(String makeFolder, String output, String introAbsFileName, String audio, String text) {
+	public void setCustomRuleDefault(String makeFolder, String output, String introAbsFileName, String audio, String text1, String text2, String text3) {
 		this.makeFolder = makeFolder;
 		this.mp4Step1File = this.makeFolder + "/" +  "temp_step1.mp4";
 		this.mp4Step2File = this.makeFolder + "/" +  "temp_step2.mp4";
@@ -48,8 +50,14 @@ class ConcatTextVideoProperty {
 		setMakeFolder(makeFolder);
 		setIntro(introAbsFileName);
 		setOutput(this.makeFolder + "/../" + output);
-		setAudio(this.makeFolder + "/" +audio);
-		setText(text);
+		if(audio==""){
+			setAudio("");
+		}else {
+			setAudio(this.makeFolder + "/" + audio);
+		}
+		setText1(text1);
+		setText2(text2);
+		setText3(text3);
 
 
 		File dir = new File(makeFolder);
@@ -57,7 +65,7 @@ class ConcatTextVideoProperty {
 		File[] matchingFiles =dir.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 //				return name.startsWith("contents") && name.endsWith("mp4");
-				return  name.endsWith("mp4");
+				return  name.endsWith("mp4") && !name.contains("temp_step1.mp4") && !name.contains("temp_step2.mp4");
 			}
 		});
 

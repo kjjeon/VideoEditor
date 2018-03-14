@@ -29,6 +29,22 @@ public class VideoEditorService {
 	}
 
 
+	public boolean makeEmblemVideo(String rootDirectory, String outputName , String introName, String text)
+	{
+		//TODO: intro file path
+//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
+		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
+		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", text);
+	}
+
+	public boolean makeEmblemVideo(String rootDirectory, String outputName , String introName, String id, String title)
+	{
+		//TODO: intro file path
+//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
+		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
+		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", id, title);
+	}
+
 	public boolean makeVideo(String rootDirectory, String outputName , String introName, String text)
 	{
 		//TODO: intro file path
