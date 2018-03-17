@@ -84,27 +84,42 @@ public class FFMpegCustomUtil {
 		}
 		return -1;
 	}
+
 	public void getInfo(FFmpegExcutorListener listener, String fileName)
 	{
 		FFmpegExcutor.getInstance().run(FFmpegExcutor.getInstance().getCmdPackage().getInfo(fileName),listener);
 	}
 
-
 	public void drawText(FFmpegExcutorListener listener, String outputFile, String inputFile, String text, String tbn) {
 		if(tbn == "") tbn ="2997";
 		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
 				72, 52, 50,"white", 0, 0, 1280, 720,tbn);
-//		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddCenterAlignTextCmd(outputFile, inputFile, text,
-//				72,"black", 0, 0,tbn);
 		FFmpegExcutor.getInstance().run(cmd,listener);
 	}
 	public void drawText(FFmpegExcutorListener listener, String outputFile, String inputFile, String text1,String text2, String text3, String tbn) {
+		int newLine = 5; // 5글자
 		if(tbn == "") tbn ="2997";
-//		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
-//				72, 52, 50,"black", 0, 0, 1280, 720,tbr);
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddCenterAlignTextCmd(outputFile, inputFile,
-				30, text1,50,text2,50,text3,"black", 0, 0,tbn);
 
+		if(text2.length() > newLine) {
+			Log.d(TAG,"length  = " + text2.length());
+			int lastIndex = text2.length() > newLine * 2 ? newLine * 2 : text2.length();
+			text3 = text2.substring(newLine,lastIndex);
+			text2 = text2.substring(0,newLine);
+			Log.d(TAG,"text2  = " + text2);
+			Log.d(TAG,"text3  = " + text3);
+		}
+
+		if(text2.length() > newLine) {
+			Log.d(TAG,"length  = " + text2.length());
+			int lastIndex = text2.length() > newLine * 2 ? newLine * 2 : text2.length();
+			text3 = text2.substring(newLine,lastIndex);
+			text2 = text2.substring(0,newLine);
+			Log.d(TAG,"text2  = " + text2);
+			Log.d(TAG,"text3  = " + text3);
+		}
+
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddCenterAlignTextCmd(outputFile, inputFile,
+				40, text1,50,text2,50,text3,"black", 0, 0,tbn);
 		FFmpegExcutor.getInstance().run(cmd,listener);
 	}
 
@@ -126,7 +141,6 @@ public class FFMpegCustomUtil {
 //				}else {
 //					relative += "/" + file.getName();
 //				}
-
 				fileList.append("file \'");
 				fileList.append(relative);
 				fileList.append("\'\n");

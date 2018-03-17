@@ -18,7 +18,7 @@ public class FontManager extends AssetsManager{
 
 	private static final String TAG = "FontManager";
 
-	public static final String NAUM_GOTHIC = "NanumGothic.ttf";
+	public static final String NAUM_MYEONG_BOLD = "NanumMyeongjoBold.ttf";
 
 	private static FontManager mInstance = null;
 
@@ -43,8 +43,8 @@ public class FontManager extends AssetsManager{
 
 
 	@Deprecated
-	public void initNanumGothic(Context context) {
-		assetsToInternalStorage(context, "fonts"+"/"+NAUM_GOTHIC);
+	public void initFont(Context context) {
+		assetsToInternalStorage(context, "fonts"+"/"+NAUM_MYEONG_BOLD);
 	}
 
 	@Deprecated

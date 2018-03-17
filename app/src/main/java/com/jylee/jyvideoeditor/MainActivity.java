@@ -117,8 +117,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 						"emblem.mp4",
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make/free.m4a",
 						"이주영",
-						"파이널 여행"
-
+						"가나다라마바사"
 				);
 			}
 		});
