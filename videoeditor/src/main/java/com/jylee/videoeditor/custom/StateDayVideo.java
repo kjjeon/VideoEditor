@@ -103,6 +103,10 @@ public class StateDayVideo implements State {
 
 			mFFmpegUtil.concatVideo(mFFmpegExcutorListener,mProperty,mProperty.getOutput(), list);
 		} else {
+			File file = new File(mProperty.getOutput());
+			if(!file.exists()) {
+				mVideoEditorServiceListener.onErrorToConvert("fail create output file");
+			}
 			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");
 		}

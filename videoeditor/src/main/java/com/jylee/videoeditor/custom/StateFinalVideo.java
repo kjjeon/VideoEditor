@@ -126,6 +126,10 @@ public class StateFinalVideo implements State {
 				}
 				mContext.getMp4ParserCustomUtil().convert(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio());
 		} else {
+			File file = new File(mProperty.getOutput());
+			if(!file.exists()) {
+				mVideoEditorServiceListener.onErrorToConvert("fail create output file");
+			}
 			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");
 		}

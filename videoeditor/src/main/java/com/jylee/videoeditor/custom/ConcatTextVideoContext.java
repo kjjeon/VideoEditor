@@ -4,7 +4,7 @@ import com.jylee.videoeditor.VideoEditorServiceListener;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutorListener;
 import com.jylee.videoeditor.mp4.Mp4Parser;
 import com.jylee.videoeditor.mp4.Mp4ParserListener;
-import com.jylee.videoeditor.util.IntroManager;
+import com.jylee.videoeditor.util.StaticVideoManager;
 
 /**
  * Created by jooyoung on 2018-03-17.
@@ -32,7 +32,7 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 		ConcatTextVideoProperty property = new ConcatTextVideoProperty();
 		property.setMakeFolder(rootDirectory);
 		property.setOutput(rootDirectory + "/../" + outputFileName);
-		property.setEnding(IntroManager.getInstance().getDirectory() + "/" + endingFileName);
+		property.setEnding(StaticVideoManager.getInstance().getDirectory() + "/" + endingFileName);
 		property.setText1(text);
 		property.setTempFolder(rootDirectory);
 		property.searchVideo(rootDirectory);
@@ -54,14 +54,14 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 		if(introFileName == "")
 			property.setIntro(introFileName);
 		else
-			property.setIntro(IntroManager.getInstance().getDirectory() + "/" + introFileName);
+			property.setIntro(StaticVideoManager.getInstance().getDirectory() + "/" + introFileName);
 
 		if(emblemFileName == "")
 			property.setEmblem(emblemFileName);
 		else
-			property.setEmblem(IntroManager.getInstance().getDirectory() + "/" + emblemFileName);
+			property.setEmblem(StaticVideoManager.getInstance().getDirectory() + "/" + emblemFileName);
 
-		property.setEnding(IntroManager.getInstance().getDirectory() + "/" + endingFileName);
+		property.setEnding(StaticVideoManager.getInstance().getDirectory() + "/" + endingFileName);
 		property.setAudio(audioAbsFilePath);
 		property.setTempFolder(rootDirectory);
 		property.searchVideo(rootDirectory);

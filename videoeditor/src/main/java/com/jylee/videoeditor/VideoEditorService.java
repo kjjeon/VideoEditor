@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.jylee.videoeditor.custom.ConcatTextVideoContext;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutor;
-import com.jylee.videoeditor.util.IntroManager;
+import com.jylee.videoeditor.util.StaticVideoManager;
 
 /**
  * Created by jooyoung on 2018-03-04.
@@ -22,7 +22,7 @@ public class VideoEditorService {
 		mListener = listener;
 		//Init
 		FFmpegExcutor.getInstance(context);
-		IntroManager.getInstance(context);
+		StaticVideoManager.getInstance(context);
 		mConcatTextVideoContext = new ConcatTextVideoContext();
 	}
 
