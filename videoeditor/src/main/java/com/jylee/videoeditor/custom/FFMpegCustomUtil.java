@@ -136,15 +136,13 @@ public class FFMpegCustomUtil {
 			if(file.exists()) {
 				String path = video;
 				String base = property.getMakeFolder();
-				String relative = new File(base).toURI().relativize(new File(path).toURI()).getPath();
-//				Log.d(TAG,"base = " + base);
-//				Log.d(TAG,"file.getParentFile().getAbsolutePath() = " + file.getParentFile().getAbsolutePath());
-//				String relative = makeRelativePath(base,file.getParentFile().getAbsolutePath());
-//				if(relative == null){
-//					relative = file.getName();
-//				}else {
-//					relative += "/" + file.getName();
-//				}
+//				String relative = new File(base).toURI().relativize(new File(path).toURI()).getPath();
+				String relative = makeRelativePath(base,file.getParentFile().getAbsolutePath());
+				if(relative == null) {
+					relative = file.getName();
+				}else {
+					relative =  makeRelativePath(base,file.getParentFile().getAbsolutePath())  + File.separator + file.getName();
+				}
 				fileList.append("file \'");
 				fileList.append(relative);
 				fileList.append("\'\n");
@@ -152,8 +150,8 @@ public class FFMpegCustomUtil {
 		}
 
 		Log.d("TAG",fileList.toString());
-		writeFile(property.getMakeFolder() + "/" +  "fflist.txt",fileList.toString());
-		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getConcatVideoCmd(outputFile,property.getMakeFolder()+ "/" + "fflist.txt");
+		writeFile(property.getMakeFolder() + File.separator +  "fflist.txt",fileList.toString());
+		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getConcatVideoCmd(outputFile,property.getMakeFolder()+ File.separator + "fflist.txt");
 		FFmpegExcutor.getInstance().run(cmd,listener);
 
 	}
@@ -209,14 +207,14 @@ public class FFMpegCustomUtil {
 
 		StringBuilder relativePath = null;
 
-		fromPath = fromPath.replaceAll("\\\\", "/");
-		toPath = toPath.replaceAll("\\\\", "/");
+		fromPath = fromPath.replaceAll("\\\\", File.separator);
+		toPath = toPath.replaceAll("\\\\", File.separator);
 
 		if (fromPath.equals(toPath) == true) {
 
 		} else {
-			String[] absoluteDirectories = fromPath.split("/");
-			String[] relativeDirectories = toPath.split("/");
+			String[] absoluteDirectories = fromPath.split(File.separator);
+			String[] relativeDirectories = toPath.split(File.separator);
 
 			//Get the shortest of the two paths
 			int length = absoluteDirectories.length < relativeDirectories.length ?
@@ -245,7 +243,7 @@ public class FFMpegCustomUtil {
 					}
 				}
 				for (index = lastCommonRoot + 1; index < relativeDirectories.length - 1; index++) {
-					relativePath.append(relativeDirectories[index] + "/");
+					relativePath.append(relativeDirectories[index] + File.separator);
 				}
 				relativePath.append(relativeDirectories[relativeDirectories.length - 1]);
 			}

@@ -33,8 +33,14 @@ public class StateFinalVideo implements State {
 		this.mVideoEditorServiceListener = listener;
 		this.mProperty = property;
 		mVideoEditorServiceListener.onStartToConvert();
-		if(property.getEmblem() == "") return false;
-		if(property.getVideoList().isEmpty()) return false;
+		if(property.getEmblem() == ""){
+			mVideoEditorServiceListener.onErrorToConvert("no such emblem file");
+			return false;
+		}
+		if(property.getVideoList().isEmpty()){
+			mVideoEditorServiceListener.onErrorToConvert("no such video list");
+			return false;
+		}
 		mProperty.setStatus(ConcatTextVideoProperty.StateType.GET_INFO);
 		mFFmpegUtil.getInfo(mFFmpegExcutorListener,property.getEmblem());
 		return false;
@@ -59,7 +65,7 @@ public class StateFinalVideo implements State {
 	public void onProgressFFmepg(String message) {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT) {
 			int progressTime = mFFmpegUtil.parseProgressTime(message);
-			Log.d(TAG, "progress= " + progressTime + "/" + mProperty.getDuration());
+			Log.d(TAG, "progress= " + progressTime + File.separator + mProperty.getDuration());
 			if(progressTime != -1)
 				mVideoEditorServiceListener.onProgressToConvert(FINISHED_ADD_TEXT_PER * progressTime/mProperty.getDuration());
 		}
@@ -147,7 +153,7 @@ public class StateFinalVideo implements State {
 		if(file.exists()) file.delete();
 		file = new File(mProperty.getMp4Step2File());
 		if(file.exists()) file.delete();
-		file = new File(mProperty.getMakeFolder() + "/" +  "fflist.txt");
+		file = new File(mProperty.getMakeFolder() + File.separator +  "fflist.txt");
 		if(file.exists()) file.delete();
 		mProperty.setStatus(ConcatTextVideoProperty.StateType.WATTING);
 		mVideoEditorServiceListener.onProgressToConvert(100);

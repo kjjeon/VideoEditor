@@ -25,20 +25,7 @@ public class FFmpegCmdPackage {
 		String[] cmd = new String[]{"-y","-f","concat"
 				,"-i", fileListText
 				,"-c","copy", output};
-
 		return cmd;
-
-//		"/storage/emulated/0/Download/mp4parser/ffmpeg.txt
-		//		String[] cmd = new String[]{
-//				"-i", "/storage/emulated/0/Download/mp4parser/0.mp4",
-//				"-i", "/storage/emulated/0/Download/mp4parser/1.mp4",
-//				"-i", "/storage/emulated/0/Download/mp4parser/2.mp4",
-//				"-filter_complex","[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]",
-//				"-map","[v]","-map","[a]",
-//				output};
-//		ffmpeg -i first.mp3 -i second.mp3 -filter_complex [0:a][1:a]concat=n=2:v=0:a=1 out.mp3
-//			String[] cmd = new String[]{"-i","concat:/storage/emulated/0/Download/mp4parser/0.mp4|/storage/emulated/0/Download/mp4parser/1.mp4|/storage/emulated/0/Download/mp4parser/12.mp4","-c","copy", output};
-
 	}
 
 	public String[] getToAddTextCmd(String output, String input, String text) {

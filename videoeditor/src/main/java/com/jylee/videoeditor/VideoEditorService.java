@@ -26,6 +26,14 @@ public class VideoEditorService {
 		mConcatTextVideoContext = new ConcatTextVideoContext();
 	}
 
+	/**
+	 *
+	 * @param rootDirectory 작업 디렉토리
+	 * @param outputFileName 아웃 파일 이름 (작업 디렉토리의 부모 디렉토리에 생성됨)
+	 * @param endingFileName 엔딩 비디오 파일 이름 (asset에 있는 파일 이름 이며, 내부 어플 디렉토리의 intro 폴더에서 가져옴)
+	 * @param text 삽입 할 텍스트를 입력
+	 * @return
+	 */
 	public boolean makeDayVideo(String rootDirectory, String outputFileName, String endingFileName, String text)
 	{
 		return mConcatTextVideoContext.makeDayVideo(rootDirectory, outputFileName, endingFileName, text, mListener);
@@ -43,12 +51,12 @@ public class VideoEditorService {
 								  String audioAbsFilePath, String id, String title)
 	{
 //		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-//		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introFileName;
+//		String introAbsFileName = IntroManager.getInstance().getDirectory() + "/" + introFileName;
 		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, endingFileName, audioAbsFilePath, id, title, mListener);
 	}
 
 	/**
-	 *  현재 여부를 리턴 한다.
+	 *  현재 동작 여부를 리턴 한다.
 	 * @return
 	 */
 	public boolean isRunning()
@@ -65,17 +73,5 @@ public class VideoEditorService {
 		return mConcatTextVideoContext.cancel();
 	}
 
-	/**
-	 *
-	 * @param outputAbsFilePath output file 절대 경로
-	 * @param introAbsFilePath intro file 절대 경로
-	 * @param videoAbsFileList 합쳐질 비디오 절대 경로 (단 ffmpeg lib 사용 시 output file  경로 보다 상위 폴더에 있으면 안된다. 동일 폴더 또는 하위 폴더로 위치)
-	 * @param audioAbsFilePath 배경음악 음원 절대 경로
-	 * @param text intro Video 에 추가 될 text
-	 * @return false : 이미 사용중 , true: 변환 진행
-	 */
-//	public boolean makeVideo(String outputAbsFilePath, String introAbsFilePath,  ArrayList<String> videoAbsFileList, String audioAbsFilePath, String text)
-//	{
-//		return mConcatTextVideo.makeVideo(outputAbsFilePath, introAbsFilePath, videoAbsFileList, audioAbsFilePath, text);
-//	}
+
 }
