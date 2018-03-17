@@ -113,8 +113,23 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 			public void onClick(View view) {
 				mVideoEditor.makeFinalVideo(
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
-						"final.mp4",
+						"final1.mp4",
 						"emblem.mp4",
+						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make/free.m4a",
+						"이주영",
+						"파이널 여행"
+
+				);
+			}
+		});
+		binding.button3.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				mVideoEditor.makeFinalVideo(
+						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+						"final2.mp4",
+						"emblem.mp4",
+						"intro.mp4",
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make/free.m4a",
 						"이주영",
 						"파이널 여행"

@@ -94,7 +94,6 @@ public class FFmpegCmdPackage {
 		Log.d(TAG,"preset = " + preset);
 		Log.d(TAG,"resolution = " + resolution);
 
-
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-vcodec","copy","-acodec","copy","-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
 		// ffmpeg info : if tbn 2997 -> video_track_timescale 2997. sample video is 2997 tbn.
@@ -124,12 +123,10 @@ public class FFmpegCmdPackage {
 
 		String preset = "medium"; // ultrafast,superfast,veryfast,faster,fast,medium,slow,slower,veryslow,placebo
 
-
 		Log.d(TAG,"input = " + input);
 		Log.d(TAG,"output = " + output);
 		Log.d(TAG,"textbody = " + textBody.toString());
 		Log.d(TAG,"preset = " + preset);
-
 
 
 //		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-vcodec","copy","-acodec","copy","-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
@@ -196,11 +193,6 @@ public class FFmpegCmdPackage {
 		Log.d(TAG,"textbody = " + textBody.toString());
 		Log.d(TAG,"preset = " + preset);
 
-
-
-//		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-vcodec","copy","-acodec","copy","-framerate","30","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
-//		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),"-video_track_timescale","2997","-profile:v","baseline", "-strict", "-2", "-preset", preset, "-s", resolution, output};
-		// ffmpeg info : if tbn 2997 -> video_track_timescale 2997. sample video is 2997 tbn.
 		String[] cmd = new String[]{"-y", "-i", input, "-vf", textBody.toString(),
 				"-video_track_timescale",tbr, "-strict", "-2",
 				"-preset", preset, output};
@@ -215,7 +207,7 @@ public class FFmpegCmdPackage {
 	}
 }
 
-
+//ffmpeg -y -i D:\workspace\project-kj\samplevideo\intro.mp4 -r 30000/1001 -video_track_timescale 2997 D:\workspace\project-kj\samplevideo\intro2.mp4
 //	There can be achieved without using map also.
 //
 //	ffmpeg -i video.mp4 -i audio.mp3 output.mp4

@@ -94,7 +94,7 @@ public class StateDayVideo implements State {
 			list.remove(0);
 			list.add(0,mProperty.getMp4Step1File());
 			mFFmpegUtil.concatVideo(mFFmpegExcutorListener,mProperty,mProperty.getOutput(), list);
-
+//			mContext.getMp4ParserCustomUtil().convert(mProperty.getOutput(),list);
 		} else {
 			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");
@@ -109,12 +109,12 @@ public class StateDayVideo implements State {
 
 	@Override
 	public void onStartMp4Parser() {
-
+		mVideoEditorServiceListener.onProgressToConvert(START_MERGE_VIDEO_PER);
 	}
 
 	@Override
 	public void onFinishMp4Parser(int jobType, String outFile) {
-
+		finishToConvert();
 	}
 
 	private void finishToConvert() {

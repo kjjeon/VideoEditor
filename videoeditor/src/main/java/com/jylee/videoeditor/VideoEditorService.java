@@ -31,13 +31,6 @@ public class VideoEditorService {
 		return mConcatTextVideoContext.makeDayVideo(rootDirectory, outputFileName, text, mListener);
 	}
 
-	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
-								  String introFileName, String audioAbsFilePath, String id, String title)
-	{
-//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-//		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introFileName;
-		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, audioAbsFilePath, id, title, mListener);
-	}
 
 	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
 								  String audioAbsFilePath,  String id, String title)
@@ -45,6 +38,13 @@ public class VideoEditorService {
 		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, "",audioAbsFilePath, id, title, mListener);
 	}
 
+	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
+								  String introFileName, String audioAbsFilePath, String id, String title)
+	{
+//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
+//		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introFileName;
+		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, audioAbsFilePath, id, title, mListener);
+	}
 
 	/**
 	 *  현재 여부를 리턴 한다.

@@ -1,7 +1,6 @@
 package com.jylee.videoeditor.custom;
 
 import com.jylee.videoeditor.mp4.Mp4Parser;
-import com.jylee.videoeditor.mp4.Mp4ParserListener;
 
 import java.util.ArrayList;
 
@@ -17,7 +16,7 @@ public class Mp4ParserCustomUtil {
 		this.mp4Parser = mp4Parser;
 	}
 
-	public void convert(String outputFile, ArrayList<String> videoList, Mp4ParserListener listener) {
+	public void convert(String outputFile, ArrayList<String> videoList) {
 		mp4Parser.run(outputFile, videoList,null);
 	}
 

@@ -54,6 +54,7 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 			property.setIntro(introFileName);
 		else
 			property.setIntro(IntroManager.getInstance().getDirectory() + "/" + introFileName);
+
 		if(emblemFileName == "")
 			property.setEmblem(emblemFileName);
 		else

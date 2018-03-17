@@ -1,7 +1,5 @@
 package com.jylee.videoeditor.custom;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutor;
@@ -120,6 +118,14 @@ public class FFMpegCustomUtil {
 				String path = video;
 				String base = property.getMakeFolder();
 				String relative = new File(base).toURI().relativize(new File(path).toURI()).getPath();
+//				Log.d(TAG,"base = " + base);
+//				Log.d(TAG,"file.getParentFile().getAbsolutePath() = " + file.getParentFile().getAbsolutePath());
+//				String relative = makeRelativePath(base,file.getParentFile().getAbsolutePath());
+//				if(relative == null){
+//					relative = file.getName();
+//				}else {
+//					relative += "/" + file.getName();
+//				}
 
 				fileList.append("file \'");
 				fileList.append(relative);
@@ -152,17 +158,81 @@ public class FFMpegCustomUtil {
 		}
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.KITKAT)
-	public  void copy(File src, File dst) throws IOException {
-		try (InputStream in = new FileInputStream(src)) {
-			try (OutputStream out = new FileOutputStream(dst)) {
-				// Transfer bytes from in to out
-				byte[] buf = new byte[1024];
-				int len;
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
+	public  void copy(String src, String dst){
+		try {
+			File file = new File(dst);
+			if (file.exists()) return;
+
+			InputStream is = null;
+			OutputStream os = null;
+
+			is = new FileInputStream(src);
+			os = new FileOutputStream(dst);
+
+			byte[] buffer = new byte[1024];
+			int read;
+			while ((read = is.read(buffer)) != -1) {
+				os.write(buffer, 0, read);
+			}
+			is.close();
+			os.flush();
+			os.close();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String makeRelativePath(String fromPath, String toPath) {
+
+		if( fromPath == null || fromPath.isEmpty() )    return null;
+		if( toPath == null || toPath.isEmpty() )        return null;
+
+		StringBuilder relativePath = null;
+
+		fromPath = fromPath.replaceAll("\\\\", "/");
+		toPath = toPath.replaceAll("\\\\", "/");
+
+		if (fromPath.equals(toPath) == true) {
+
+		} else {
+			String[] absoluteDirectories = fromPath.split("/");
+			String[] relativeDirectories = toPath.split("/");
+
+			//Get the shortest of the two paths
+			int length = absoluteDirectories.length < relativeDirectories.length ?
+					absoluteDirectories.length : relativeDirectories.length;
+
+			//Use to determine where in the loop we exited
+			int lastCommonRoot = -1;
+			int index;
+
+			//Find common root
+			for (index = 0; index < length; index++) {
+				if (absoluteDirectories[index].equals(relativeDirectories[index])) {
+					lastCommonRoot = index;
+				} else {
+					break;
+					//If we didn't find a common prefix then throw
 				}
 			}
+			if (lastCommonRoot != -1) {
+				//Build up the relative path
+				relativePath = new StringBuilder();
+				//Add on the ..
+				for (index = lastCommonRoot + 1; index < absoluteDirectories.length; index++) {
+					if (absoluteDirectories[index].length() > 0) {
+						relativePath.append("../");
+					}
+				}
+				for (index = lastCommonRoot + 1; index < relativeDirectories.length - 1; index++) {
+					relativePath.append(relativeDirectories[index] + "/");
+				}
+				relativePath.append(relativeDirectories[relativeDirectories.length - 1]);
+			}
 		}
+
+		return relativePath == null ? null : relativePath.toString();
 	}
 }

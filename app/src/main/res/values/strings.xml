@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">JYVideoEditor</string>
+    <string name="button1">day</string>
+    <string name="button2">final</string>
+    <string name="button3">final2</string>
+    <string name="text">대기</string>
+
 </resources>
