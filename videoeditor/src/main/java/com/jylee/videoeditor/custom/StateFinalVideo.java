@@ -103,7 +103,7 @@ public class StateFinalVideo implements State {
 			if(mProperty.getEnding() != "") {
 				list.add(mProperty.getEnding());
 				//If you want to test from an external storage, you can use it.
-//				mFFmpegUtil.copy(mProperty.getEnding(), mProperty.getMakeFolder() + "/ending.mp4");
+//				mFFmpegUtil.copy(mProperty.getEnding(), mProperty.getMakeFolder() + "/endingmp4");
 //				list.add(mProperty.getMakeFolder() + "/ending.mp4");
 			}
 //			Log.d(TAG,"list = " + list.toString());
