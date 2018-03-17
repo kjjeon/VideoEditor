@@ -80,6 +80,7 @@ public class StateFinalVideo implements State {
 		Log.d(TAG,"ffmpeg onSuccess");
 	}
 
+
 	@Override
 	public void onFinishFFmepg() {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO){
@@ -95,12 +96,14 @@ public class StateFinalVideo implements State {
 			list.add(0,mProperty.getMp4Step1File());
 			if(mProperty.getIntro() != "") {
 				list.add(0, mProperty.getIntro());
+				//If you want to test from an external storage, you can use it.
+//				mFFmpegUtil.copy(mProperty.getIntro(),mProperty.getMakeFolder() + "/intro.mp4");
+//				list.add(0, mProperty.getMakeFolder() + "/intro.mp4");
 			}
 //			Log.d(TAG,"list = " + list.toString());
 			mFFmpegUtil.concatVideo(mFFmpegExcutorListener,mProperty,mProperty.getMp4Step2File(), list);
 
 		}else if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.MERGE_VIDEO){
-				Log.d(TAG,"Merge OK! ");
 				mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_AUDIO);
 				File step2 = new File(mProperty.getMp4Step2File());
 				File audio = new File(mProperty.getAudio());
