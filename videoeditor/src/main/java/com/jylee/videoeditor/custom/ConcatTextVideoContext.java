@@ -28,10 +28,11 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 		setState(null);
 	}
 
-	public boolean makeDayVideo(String rootDirectory, String outputFileName, String text, VideoEditorServiceListener listener) {
+	public boolean makeDayVideo(String rootDirectory, String outputFileName, String endingFileName, String text, VideoEditorServiceListener listener) {
 		ConcatTextVideoProperty property = new ConcatTextVideoProperty();
 		property.setMakeFolder(rootDirectory);
 		property.setOutput(rootDirectory + "/../" + outputFileName);
+		property.setEnding(IntroManager.getInstance().getDirectory() + "/" + endingFileName);
 		property.setText1(text);
 		property.setTempFolder(rootDirectory);
 		property.searchVideo(rootDirectory);
@@ -42,7 +43,7 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 		}
 		return false;
 	}
-	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName, String introFileName,
+	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName, String introFileName, String endingFileName,
 								  String audioAbsFilePath, String id, String title, VideoEditorServiceListener listener) {
 		ConcatTextVideoProperty property = new ConcatTextVideoProperty();
 		property.setMakeFolder(rootDirectory);
@@ -59,6 +60,8 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 			property.setEmblem(emblemFileName);
 		else
 			property.setEmblem(IntroManager.getInstance().getDirectory() + "/" + emblemFileName);
+
+		property.setEnding(IntroManager.getInstance().getDirectory() + "/" + endingFileName);
 		property.setAudio(audioAbsFilePath);
 		property.setTempFolder(rootDirectory);
 		property.searchVideo(rootDirectory);

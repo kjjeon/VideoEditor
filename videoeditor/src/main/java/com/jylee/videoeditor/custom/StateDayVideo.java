@@ -93,8 +93,12 @@ public class StateDayVideo implements State {
 			ArrayList<String> list = mProperty.getVideoList();
 			list.remove(0);
 			list.add(0,mProperty.getMp4Step1File());
+			list.add(mProperty.getEnding());
+			//If you want to test from an external storage, you can use it.
+//			mFFmpegUtil.copy(mProperty.getEnding(),mProperty.getMakeFolder() + "/ending.mp4");
+//			list.add(mProperty.getMakeFolder() + "/ending.mp4");
+
 			mFFmpegUtil.concatVideo(mFFmpegExcutorListener,mProperty,mProperty.getOutput(), list);
-//			mContext.getMp4ParserCustomUtil().convert(mProperty.getOutput(),list);
 		} else {
 			finishToConvert();
 			Log.d(TAG,"finish ffmpeg converting");

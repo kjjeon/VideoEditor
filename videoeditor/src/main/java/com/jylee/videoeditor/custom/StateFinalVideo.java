@@ -100,6 +100,12 @@ public class StateFinalVideo implements State {
 //				mFFmpegUtil.copy(mProperty.getIntro(),mProperty.getMakeFolder() + "/intro.mp4");
 //				list.add(0, mProperty.getMakeFolder() + "/intro.mp4");
 			}
+			if(mProperty.getEnding() != "") {
+				list.add(mProperty.getEnding());
+				//If you want to test from an external storage, you can use it.
+//				mFFmpegUtil.copy(mProperty.getEnding(), mProperty.getMakeFolder() + "/ending.mp4");
+//				list.add(mProperty.getMakeFolder() + "/ending.mp4");
+			}
 //			Log.d(TAG,"list = " + list.toString());
 			mFFmpegUtil.concatVideo(mFFmpegExcutorListener,mProperty,mProperty.getMp4Step2File(), list);
 

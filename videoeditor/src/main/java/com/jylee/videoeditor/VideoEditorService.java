@@ -26,24 +26,25 @@ public class VideoEditorService {
 		mConcatTextVideoContext = new ConcatTextVideoContext();
 	}
 
-	public boolean makeDayVideo(String rootDirectory, String outputFileName, String text)
+	public boolean makeDayVideo(String rootDirectory, String outputFileName, String endingFileName, String text)
 	{
-		return mConcatTextVideoContext.makeDayVideo(rootDirectory, outputFileName, text, mListener);
+		return mConcatTextVideoContext.makeDayVideo(rootDirectory, outputFileName, endingFileName, text, mListener);
 	}
 
 
-	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
+	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName, String endingFileName,
 								  String audioAbsFilePath,  String id, String title)
 	{
-		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, "",audioAbsFilePath, id, title, mListener);
+		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName,"", endingFileName,audioAbsFilePath, id, title, mListener);
 	}
 
 	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
-								  String introFileName, String audioAbsFilePath, String id, String title)
+								  String introFileName, String endingFileName,
+								  String audioAbsFilePath, String id, String title)
 	{
 //		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
 //		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introFileName;
-		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, audioAbsFilePath, id, title, mListener);
+		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, endingFileName, audioAbsFilePath, id, title, mListener);
 	}
 
 	/**

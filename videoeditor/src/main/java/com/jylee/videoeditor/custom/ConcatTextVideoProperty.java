@@ -25,6 +25,7 @@ class ConcatTextVideoProperty {
 	private String text3="";
 	private String output ="";
 	private String intro="";
+	private String ending="";
 	private String emblem="";
 	private String audio="";
 	private ArrayList<String> videoList = new ArrayList<String>();

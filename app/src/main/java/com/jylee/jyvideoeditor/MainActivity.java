@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 				mVideoEditor.makeDayVideo(
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
 						"day_1.mp4",
+						"ending.mp4",
 						"이것은 데이 영상 테스트"
 				);
 
@@ -115,9 +116,10 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
 						"final1.mp4",
 						"emblem.mp4",
+						"ending.mp4",
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make/free.m4a",
 						"이주영",
-						"가나다라마바사"
+						"가나\n다라마바사아자"
 				);
 			}
 		});
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 						"final2.mp4",
 						"emblem.mp4",
 						"intro.mp4",
+						"ending.mp4",
 						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make/free.m4a",
 						"이주영",
 						"파이널 여행"
