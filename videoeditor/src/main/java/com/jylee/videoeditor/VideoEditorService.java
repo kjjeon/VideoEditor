@@ -2,11 +2,9 @@ package com.jylee.videoeditor;
 
 import android.content.Context;
 
-import com.jylee.videoeditor.custom.ConcatTextVideo;
+import com.jylee.videoeditor.custom.ConcatTextVideoContext;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutor;
 import com.jylee.videoeditor.util.IntroManager;
-
-import java.util.ArrayList;
 
 /**
  * Created by jooyoung on 2018-03-04.
@@ -15,7 +13,7 @@ import java.util.ArrayList;
 public class VideoEditorService {
 
 	private Context mContext = null;
-	private ConcatTextVideo mConcatTextVideo = null;
+	private ConcatTextVideoContext mConcatTextVideoContext = null;
 	private VideoEditorServiceListener mListener = null;
 
 
@@ -25,41 +23,28 @@ public class VideoEditorService {
 		//Init
 		FFmpegExcutor.getInstance(context);
 		IntroManager.getInstance(context);
-		mConcatTextVideo = new ConcatTextVideo(mListener);
+		mConcatTextVideoContext = new ConcatTextVideoContext();
 	}
 
-
-	public boolean makeEmblemVideo(String rootDirectory, String outputName , String introName, String text)
+	public boolean makeDayVideo(String rootDirectory, String outputFileName, String text)
 	{
-		//TODO: intro file path
-//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
-		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", text);
+		return mConcatTextVideoContext.makeDayVideo(rootDirectory, outputFileName, text, mListener);
 	}
 
-	public boolean makeEmblemVideo(String rootDirectory, String outputName , String introName, String id, String title)
+	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
+								  String introFileName, String audioAbsFilePath, String id, String title)
 	{
-		//TODO: intro file path
 //		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
-		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", id, title);
+//		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introFileName;
+		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, audioAbsFilePath, id, title, mListener);
 	}
 
-	public boolean makeVideo(String rootDirectory, String outputName , String introName, String text)
+	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
+								  String audioAbsFilePath,  String id, String title)
 	{
-		//TODO: intro file path
-//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
-		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, "", text);
+		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, "",audioAbsFilePath, id, title, mListener);
 	}
 
-	public boolean makeVideo(String rootDirectory, String outputName , String introName, String audioName , String text)
-	{
-		//TODO: intro file path
-//		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
-		String introAbsFileName =IntroManager.getInstance().getDirectory() + "/" + introName;
-		return mConcatTextVideo.makeVideo(rootDirectory, outputName, introAbsFileName, audioName, text);
-	}
 
 	/**
 	 *  현재 여부를 리턴 한다.
@@ -67,7 +52,7 @@ public class VideoEditorService {
 	 */
 	public boolean isRunning()
 	{
-		return mConcatTextVideo.isRunning();
+		return mConcatTextVideoContext.isRunning();
 	}
 
 	/**
@@ -76,7 +61,7 @@ public class VideoEditorService {
 	 */
 	public boolean cancel()
 	{
-		return mConcatTextVideo.cancel();
+		return mConcatTextVideoContext.cancel();
 	}
 
 	/**
@@ -88,8 +73,8 @@ public class VideoEditorService {
 	 * @param text intro Video 에 추가 될 text
 	 * @return false : 이미 사용중 , true: 변환 진행
 	 */
-	public boolean makeVideo(String outputAbsFilePath, String introAbsFilePath,  ArrayList<String> videoAbsFileList, String audioAbsFilePath, String text)
-	{
-		return mConcatTextVideo.makeVideo(outputAbsFilePath, introAbsFilePath, videoAbsFileList, audioAbsFilePath, text);
-	}
+//	public boolean makeVideo(String outputAbsFilePath, String introAbsFilePath,  ArrayList<String> videoAbsFileList, String audioAbsFilePath, String text)
+//	{
+//		return mConcatTextVideo.makeVideo(outputAbsFilePath, introAbsFilePath, videoAbsFileList, audioAbsFilePath, text);
+//	}
 }

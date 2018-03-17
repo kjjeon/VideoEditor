@@ -91,16 +91,35 @@ public class MainActivity extends AppCompatActivity implements VideoEditorServic
 //						"emblem.mp4",
 //						"이주영"
 //				);
-				mVideoEditor.makeEmblemVideo(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
-						"day_1.mp4",
-						"emblem.mp4",
-						"이주영",
-						"나의 여행"
-				);
+//				mVideoEditor.make(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+//						"day_1.mp4",
+//						"emblem.mp4",
+//						"이주영",
+//						"나의 여행"
+//				);
 
 //				mVideoEditor.makeVideo(out,intro,videoList,mp3,"스벅 조아!");
 
+				mVideoEditor.makeDayVideo(
+						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+						"day_1.mp4",
+						"이것은 데이 영상 테스트"
+				);
 
+			}
+		});
+		binding.button2.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				mVideoEditor.makeFinalVideo(
+						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make",
+						"final.mp4",
+						"emblem.mp4",
+						Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/mp4parser/make/free.m4a",
+						"이주영",
+						"파이널 여행"
+
+				);
 			}
 		});
 	}

@@ -264,7 +264,7 @@ public class Mp4Parser {
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 			mTask = null;
-			mListener.onFininsh(mp4ParserProperty.getJobType(),mp4ParserProperty.getOutPath());
+			mListener.onFinish(mp4ParserProperty.getJobType(),mp4ParserProperty.getOutPath());
 		}
 	}
 }

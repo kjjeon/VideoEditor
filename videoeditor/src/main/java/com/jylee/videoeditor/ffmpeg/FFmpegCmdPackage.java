@@ -149,6 +149,8 @@ public class FFmpegCmdPackage {
 											   String fontColor,
 											   int startTime, int endTime,
 											   String tbr) {
+
+
 		StringBuffer textBody = new StringBuffer ();
 
 		textBody.append("drawtext=");
@@ -156,27 +158,38 @@ public class FFmpegCmdPackage {
 			textBody.append("enable=").append("'between(t,"+String.valueOf(startTime)+","+String.valueOf(endTime)+")'").append(":");
 		textBody.append("text=").append(text1).append(":");
 		textBody.append("fontsize=").append(String.valueOf(fontsize1)).append(":");
-//		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
 		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_GOTHIC)).append(":");
 		textBody.append("fontcolor=").append(fontColor).append(":");
 		textBody.append("x=(w-tw)/2").append(":");
 		textBody.append("y=(h-th-").append(String.valueOf(fontsize2)).append("-line_h)/2");
 //		textBody.append("y=(h-th)/2");
 
+		if(text2 != "") {
+			textBody.append(", drawtext=");
+			if (endTime != 0)
+				textBody.append("enable=").append("'between(t," + String.valueOf(startTime) + "," + String.valueOf(endTime) + ")'").append(":");
+			textBody.append("text=").append(text2).append(":");
+			textBody.append("fontsize=").append(String.valueOf(fontsize2)).append(":");
+			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_GOTHIC)).append(":");
+			textBody.append("fontcolor=").append(fontColor).append(":");
+			textBody.append("x=(w-tw)/2").append(":");
+			textBody.append("y=(h-th)/2");
+		}
 
-		textBody.append(", drawtext=");
-		if(endTime != 0)
-			textBody.append("enable=").append("'between(t,"+String.valueOf(startTime)+","+String.valueOf(endTime)+")'").append(":");
-		textBody.append("text=").append(text2).append(":");
-		textBody.append("fontsize=").append(String.valueOf(fontsize2)).append(":");
-//		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
-		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_GOTHIC)).append(":");
-		textBody.append("fontcolor=").append(fontColor).append(":");
-		textBody.append("x=(w-tw)/2").append(":");
-		textBody.append("y=(h-th)/2");
+		if(text3 != "") {
+			textBody.append(", drawtext=");
+			if (endTime != 0)
+				textBody.append("enable=").append("'between(t," + String.valueOf(startTime) + "," + String.valueOf(endTime) + ")'").append(":");
+			textBody.append("text=").append(text3).append(":");
+			textBody.append("fontsize=").append(String.valueOf(fontsize3)).append(":");
+			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_GOTHIC)).append(":");
+			textBody.append("fontcolor=").append(fontColor).append(":");
+			textBody.append("x=(w-tw)/2").append(":");
+			textBody.append("y=(h+th+line_h)/2");
+		}
+
 
 		String preset = "medium"; // ultrafast,superfast,veryfast,faster,fast,medium,slow,slower,veryslow,placebo
-
 
 		Log.d(TAG,"input = " + input);
 		Log.d(TAG,"output = " + output);
@@ -194,6 +207,7 @@ public class FFmpegCmdPackage {
 
 		return cmd;
 	}
+
 	public String[] getToMergeAudio(String output, String input, String audio) {
 		//shortest 옵션은 input source 하나라도 끝나면 인코딩을 중지한다.
 		String[] cmd = new String[]{"-i", input, "-i", audio, "-map", "0:0", "-map", "1:0", "-shortest",  output};

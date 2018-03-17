@@ -6,5 +6,5 @@ package com.jylee.videoeditor.mp4;
 
 public interface Mp4ParserListener {
 		void onStart();
-		void onFininsh(int jobType,String outFile);
+		void onFinish(int jobType,String outFile);
 }
