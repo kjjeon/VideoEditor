@@ -91,17 +91,17 @@ public class FFMpegCustomUtil {
 	}
 
 	public void drawText(FFmpegExcutorListener listener, String outputFile, String inputFile, String text, String tbn) {
-		if(tbn == "") tbn ="2997";
+		if(tbn == "") tbn ="30000";
 //		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextCmd(outputFile, inputFile, text,
 //				72, 52, 50,"white", 0, 0, 1280, 720,tbn);
 		final String[] cmd = FFmpegExcutor.getInstance().getCmdPackage().getToAddTextAlignTextCmd(outputFile, inputFile, text
-				, 70,"white", 0, 0, 1280, 720,tbn);
+				, 140,"white", 0, 0, 1280, 720,tbn);
 
 		FFmpegExcutor.getInstance().run(cmd,listener);
 	}
 	public void drawText(FFmpegExcutorListener listener, String outputFile, String inputFile, String text1,String text2, String text3, String tbn) {
 		int newLine = 5; // 5글자
-		if(tbn == "") tbn ="2997";
+		if(tbn == "") tbn ="30000";
 
 		if(text2.contains("\n")) {
 			Log.d(TAG,"new Line  = " +  text2.indexOf("\n"));

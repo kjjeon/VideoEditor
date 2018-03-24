@@ -21,15 +21,18 @@ public class AssetsManager {
 
 	private @Getter
 	String directory;
-	private String baseName;
+	private @Getter String baseName;
 
-	public AssetsManager(Context context, String folder){
-		this.directory = context.getFilesDir().getAbsolutePath() +  "/" + folder;
+
+	public AssetsManager(Context context, String folder, boolean init){
+		this.directory = context.getFilesDir().getAbsolutePath() +  File.separator + folder;
 		this.baseName = folder;
-		copyFiles(context);
+
+		if(init)
+			copyFiles(context);
 	}
 
-	private void copyFiles(Context context) {
+	public void copyFiles(Context context) {
 		makeFolder(directory);
 		try {
 			android.content.res.AssetManager assetMgr = context.getAssets();
@@ -39,6 +42,27 @@ public class AssetsManager {
 				Log.d(TAG," element = " + element);
 				copyAssetAll(context, element);
 			}
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void copyFileFromAsset(Context context,String srcName, String destAbsFilePath) {
+		try {
+			android.content.res.AssetManager assetMgr = context.getAssets();
+			InputStream is = assetMgr.open(srcName);
+			OutputStream os = new FileOutputStream(destAbsFilePath);
+
+			byte[] buffer = new byte[1024];
+			int read;
+			while ((read = is.read(buffer)) != -1) {
+				os.write(buffer, 0, read);
+			}
+			is.close();
+			os.flush();
+			os.close();
+
 		}
 		catch(IOException e) {
 			e.printStackTrace();

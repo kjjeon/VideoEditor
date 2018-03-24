@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.jylee.videoeditor.VideoEditorServiceListener;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutorListener;
+import com.jylee.videoeditor.util.StaticVideoManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class StateDayVideo implements State {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT) {
 			int progressTime = mFFmpegUtil.parseProgressTime(message);
 			Log.d(TAG, "progress= " + progressTime + File.separator + mProperty.getDuration());
-			if(progressTime != -1)
+			if(progressTime != -1 && mProperty.getDuration() != 0)
 				mVideoEditorServiceListener.onProgressToConvert(FINISHED_ADD_TEXT_PER * progressTime/mProperty.getDuration());
 		}
 	}
@@ -96,8 +97,11 @@ public class StateDayVideo implements State {
 			ArrayList<String> list = mProperty.getVideoList();
 			list.remove(0);
 			list.add(0,mProperty.getMp4Step1File());
-			list.add(mProperty.getEnding());
-			//If you want to test from an external storage, you can use it.
+//			list.add(mProperty.getEnding());
+			StaticVideoManager.getInstance().copyFileFromAsset(mProperty.getEnding(),
+					mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
+			list.add(mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
+			File file = new File(mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
 //			mFFmpegUtil.copy(mProperty.getEnding(),mProperty.getMakeFolder() + "/ending.mp4");
 //			list.add(mProperty.getMakeFolder() + "/ending.mp4");
 
@@ -136,6 +140,9 @@ public class StateDayVideo implements State {
 		if(file.exists()) file.delete();
 		file = new File(mProperty.getMakeFolder() + File.separator +  "fflist.txt");
 		if(file.exists()) file.delete();
+		file = new File(mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
+		if(file.isFile() && file.exists() && mProperty.getEnding() != "") file.delete();
+
 		mProperty.setStatus(ConcatTextVideoProperty.StateType.WATTING);
 		mVideoEditorServiceListener.onProgressToConvert(100);
 		mVideoEditorServiceListener.onFininshToConvert();

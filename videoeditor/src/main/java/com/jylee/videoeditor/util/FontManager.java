@@ -18,12 +18,12 @@ public class FontManager extends AssetsManager{
 
 	private static final String TAG = "FontManager";
 
-	public static final String NAUM_MYEONG_BOLD = "NanumMyeongjoBold.ttf";
+	public static final String DEFAULT_FONT = "NanumMyeongjoExtraBold.ttf";
 
 	private static FontManager mInstance = null;
 
 	private FontManager(Context context){
-		super(context,"fonts");
+		super(context,"fonts",true);
 	}
 	public static FontManager getInstance(Context context) {
 		if(mInstance == null) {
@@ -44,7 +44,7 @@ public class FontManager extends AssetsManager{
 
 	@Deprecated
 	public void initFont(Context context) {
-		assetsToInternalStorage(context, "fonts"+"/"+NAUM_MYEONG_BOLD);
+		assetsToInternalStorage(context, "fonts"+"/"+ DEFAULT_FONT);
 	}
 
 	@Deprecated

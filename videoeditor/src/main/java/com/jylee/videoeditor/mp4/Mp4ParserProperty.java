@@ -13,7 +13,7 @@ public class Mp4ParserProperty {
 
 	private ArrayList<String> videoList = null;
 	private ArrayList<String> audioList = null;
-	private boolean shortest = true;
+	private boolean shortest = false;
 	private String outPath = null;
 	private int jobType = JOB_TYPE_READY;
 

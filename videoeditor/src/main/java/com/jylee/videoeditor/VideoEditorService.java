@@ -48,11 +48,11 @@ public class VideoEditorService {
 
 	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName,
 								  String introFileName, String endingFileName,
-								  String audioAbsFilePath, String id, String title)
+								  String audioFileName, String id, String title)
 	{
 //		String introAbsFileName = mContext.getFilesDir().getAbsolutePath() + "/intro/" +  introName;
 //		String introAbsFileName = IntroManager.getInstance().getDirectory() + "/" + introFileName;
-		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, endingFileName, audioAbsFilePath, id, title, mListener);
+		return mConcatTextVideoContext.makeFinalVideo(rootDirectory, outputFileName, emblemFileName, introFileName, endingFileName, audioFileName, id, title, mListener);
 	}
 
 	/**

@@ -4,7 +4,6 @@ import com.jylee.videoeditor.VideoEditorServiceListener;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutorListener;
 import com.jylee.videoeditor.mp4.Mp4Parser;
 import com.jylee.videoeditor.mp4.Mp4ParserListener;
-import com.jylee.videoeditor.util.StaticVideoManager;
 
 /**
  * Created by jooyoung on 2018-03-17.
@@ -32,7 +31,8 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 		ConcatTextVideoProperty property = new ConcatTextVideoProperty();
 		property.setMakeFolder(rootDirectory);
 		property.setOutput(rootDirectory + "/../" + outputFileName);
-		property.setEnding(StaticVideoManager.getInstance().getDirectory() + "/" + endingFileName);
+		property.setEnding(endingFileName);
+//		property.setEnding(StaticVideoManager.getInstance().getDirectory() + File.separator + endingFileName);
 		property.setText1(text);
 		property.setTempFolder(rootDirectory);
 		property.searchVideo(rootDirectory);
@@ -44,25 +44,26 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 		return false;
 	}
 	public boolean makeFinalVideo(String rootDirectory, String outputFileName, String emblemFileName, String introFileName, String endingFileName,
-								  String audioAbsFilePath, String id, String title, VideoEditorServiceListener listener) {
+								  String audioFileName, String id, String title, VideoEditorServiceListener listener) {
 		ConcatTextVideoProperty property = new ConcatTextVideoProperty();
 		property.setMakeFolder(rootDirectory);
 		property.setOutput(rootDirectory + "/../" + outputFileName);
 		property.setText1(id);
 		property.setText2(title);
-//		property.setText3(title);
-		if(introFileName == "")
+
+//		if(introFileName == "")
 			property.setIntro(introFileName);
-		else
-			property.setIntro(StaticVideoManager.getInstance().getDirectory() + "/" + introFileName);
+//		else
+//			property.setIntro(StaticVideoManager.getInstance().getDirectory() + File.separator + introFileName);
 
-		if(emblemFileName == "")
+//		if(emblemFileName == "")
 			property.setEmblem(emblemFileName);
-		else
-			property.setEmblem(StaticVideoManager.getInstance().getDirectory() + "/" + emblemFileName);
+//		else
+//			property.setEmblem(StaticVideoManager.getInstance().getDirectory() + File.separator + emblemFileName);
 
-		property.setEnding(StaticVideoManager.getInstance().getDirectory() + "/" + endingFileName);
-		property.setAudio(audioAbsFilePath);
+//		property.setEnding(StaticVideoManager.getInstance().getDirectory() + File.separator + endingFileName);
+		property.setEnding(endingFileName);
+		property.setAudio(audioFileName);
 		property.setTempFolder(rootDirectory);
 		property.searchVideo(rootDirectory);
 		mVideoEditorServiceListener = listener;
@@ -100,32 +101,33 @@ public class ConcatTextVideoContext implements FFmpegExcutorListener {
 	//ffmpeg
 	@Override
 	public void onStart() {
-		state.onStartFFmepg();
+		if(state != null) state.onStartFFmepg();
 	}
 
 	@Override
 	public void onProgress(String message) {
-		state.onProgressFFmepg(message);
+		if(state != null)
+			state.onProgressFFmepg(message);
 	}
 
 	@Override
 	public void onFailure(String message) {
-		state.onFailureFFmepg(message);
+		if(state != null) state.onFailureFFmepg(message);
 	}
 
 	@Override
 	public void onSuccess(String message) {
-		state.onSuccessFFmepg(message);
+		if(state != null) state.onSuccessFFmepg(message);
 	}
 
 	@Override
 	public void onFinish() {
-		state.onFinishFFmepg();
+		if(state != null) state.onFinishFFmepg();
 	}
 
 	@Override
 	public void onError(String exception) {
-		state.onErrorFFmepg(exception);
+		if(state != null) state.onErrorFFmepg(exception);
 	}
 
 /*

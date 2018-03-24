@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.jylee.videoeditor.VideoEditorServiceListener;
 import com.jylee.videoeditor.ffmpeg.FFmpegExcutorListener;
+import com.jylee.videoeditor.util.StaticVideoManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class StateFinalVideo implements State {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.ADD_TEXT) {
 			int progressTime = mFFmpegUtil.parseProgressTime(message);
 			Log.d(TAG, "progress= " + progressTime + File.separator + mProperty.getDuration());
-			if(progressTime != -1)
+			if(progressTime != -1 && mProperty.getDuration() != 0)
 				mVideoEditorServiceListener.onProgressToConvert(FINISHED_ADD_TEXT_PER * progressTime/mProperty.getDuration());
 		}
 	}
@@ -91,7 +92,10 @@ public class StateFinalVideo implements State {
 	public void onFinishFFmepg() {
 		if(mProperty.getStatus()  == ConcatTextVideoProperty.StateType.GET_INFO){
 			mProperty.setStatus(ConcatTextVideoProperty.StateType.ADD_TEXT);
-				mFFmpegUtil.drawText(mFFmpegExcutorListener,mProperty.getMp4Step1File(), mProperty.getEmblem(),
+			StaticVideoManager.getInstance().copyFileFromAsset(mProperty.getEmblem(),
+					mProperty.getMakeFolder() + File.separator + mProperty.getEmblem());
+				mFFmpegUtil.drawText(mFFmpegExcutorListener,mProperty.getMp4Step1File(),
+						mProperty.getMakeFolder() + File.separator + mProperty.getEmblem(),
 						mProperty.getText1(),
 						mProperty.getText2(),
 						mProperty.getText3(),
@@ -101,30 +105,44 @@ public class StateFinalVideo implements State {
 			ArrayList<String> list = mProperty.getVideoList();
 			list.add(0,mProperty.getMp4Step1File());
 			if(mProperty.getIntro() != "") {
-				list.add(0, mProperty.getIntro());
+//				list.add(0, mProperty.getIntro());
 				//If you want to test from an external storage, you can use it.
 //				mFFmpegUtil.copy(mProperty.getIntro(),mProperty.getMakeFolder() + "/intro.mp4");
 //				list.add(0, mProperty.getMakeFolder() + "/intro.mp4");
+				StaticVideoManager.getInstance().copyFileFromAsset(mProperty.getIntro(),
+						mProperty.getMakeFolder() + File.separator + mProperty.getIntro());
+				list.add(0, mProperty.getMakeFolder() + File.separator + mProperty.getIntro());
 			}
 			if(mProperty.getEnding() != "") {
-				list.add(mProperty.getEnding());
+//				list.add(mProperty.getEnding());
 				//If you want to test from an external storage, you can use it.
-//				mFFmpegUtil.copy(mProperty.getEnding(), mProperty.getMakeFolder() + "/endingmp4");
+//				mFFmpegUtil.copy(mProperty.getEnding(), mProperty.getMakeFolder() + "/ending.mp4");
 //				list.add(mProperty.getMakeFolder() + "/ending.mp4");
+				StaticVideoManager.getInstance().copyFileFromAsset(mProperty.getEnding(),
+						mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
+				list.add(mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
 			}
 //			Log.d(TAG,"list = " + list.toString());
 			mFFmpegUtil.concatVideo(mFFmpegExcutorListener,mProperty,mProperty.getMp4Step2File(), list);
 
 		}else if(mProperty.getStatus() == ConcatTextVideoProperty.StateType.MERGE_VIDEO){
 				mProperty.setStatus(ConcatTextVideoProperty.StateType.MERGE_AUDIO);
+				StaticVideoManager.getInstance().copyFileFromAsset(mProperty.getAudio(),
+					mProperty.getMakeFolder() + File.separator + mProperty.getAudio());
 				File step2 = new File(mProperty.getMp4Step2File());
-				File audio = new File(mProperty.getAudio());
-				if(step2.isFile() == false || audio.isFile()  == false) {
+				File audio = new File(mProperty.getMakeFolder() + File.separator + mProperty.getAudio());
+				if(step2.isFile() == false ){
+					mVideoEditorServiceListener.onErrorToConvert("no exist step2 file");
 					finishToConvert();
-					mVideoEditorServiceListener.onErrorToConvert("no such file or directory");
 					return;
 				}
-				mContext.getMp4ParserCustomUtil().convert(mProperty.getOutput(),mProperty.getMp4Step2File(),mProperty.getAudio());
+				if(audio.isFile()  == false) {
+					mVideoEditorServiceListener.onErrorToConvert("no exist audio file");
+					finishToConvert();
+					return;
+				}
+				mContext.getMp4ParserCustomUtil().convert(mProperty.getOutput(),mProperty.getMp4Step2File(),
+						mProperty.getMakeFolder() + File.separator + mProperty.getAudio());
 		} else {
 			File file = new File(mProperty.getOutput());
 			if(!file.exists()) {
@@ -154,11 +172,20 @@ public class StateFinalVideo implements State {
 	private void finishToConvert() {
 		mVideoEditorServiceListener.onProgressToConvert(START_REMOVE_TEMP_PER);
 		File file = new File(mProperty.getMp4Step1File());
-		if(file.exists()) file.delete();
+		if(file.isFile() && file.exists()) file.delete();
 		file = new File(mProperty.getMp4Step2File());
-		if(file.exists()) file.delete();
+		if(file.isFile() && file.exists()) file.delete();
 		file = new File(mProperty.getMakeFolder() + File.separator +  "fflist.txt");
-		if(file.exists()) file.delete();
+		if(file.isFile() && file.exists()) file.delete();
+		file = new File(mProperty.getMakeFolder() + File.separator + mProperty.getEmblem());
+		if(file.isFile() && file.exists() && mProperty.getEmblem() != "") file.delete();
+		file = new File(mProperty.getMakeFolder() + File.separator + mProperty.getEnding());
+		if(file.isFile() && file.exists() && mProperty.getEnding() != "") file.delete();
+		file = new File(mProperty.getMakeFolder() + File.separator + mProperty.getIntro());
+		if(file.isFile() && file.exists() && mProperty.getIntro() != "") file.delete();
+		file = new File(mProperty.getMakeFolder() + File.separator + mProperty.getAudio());
+		if(file.isFile() && file.exists() && mProperty.getAudio() != "") file.delete();
+
 		mProperty.setStatus(ConcatTextVideoProperty.StateType.WATTING);
 		mVideoEditorServiceListener.onProgressToConvert(100);
 		mVideoEditorServiceListener.onFininshToConvert();

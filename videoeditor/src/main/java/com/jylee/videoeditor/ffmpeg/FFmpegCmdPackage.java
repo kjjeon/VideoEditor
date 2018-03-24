@@ -35,7 +35,7 @@ public class FFmpegCmdPackage {
 		textBody.append("text=").append(text).append(":");
 		textBody.append("fontsize=").append("50").append(":");
 //		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
-		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 		textBody.append("fontcolor=").append("white").append(":");
 		textBody.append("x=").append("70").append(":");
 		textBody.append("y=").append("52").append(":");
@@ -67,7 +67,7 @@ public class FFmpegCmdPackage {
 		textBody.append("text=").append(text).append(":");
 		textBody.append("fontsize=").append(String.valueOf(fontsize)).append(":");
 //		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
-		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 		textBody.append("fontcolor=").append(fontColor).append(":");
 		textBody.append("x=").append(String.valueOf(x)).append(":");
 		textBody.append("y=").append(String.valueOf(y));
@@ -103,7 +103,7 @@ public class FFmpegCmdPackage {
 		textBody.append("text=").append(text).append(":");
 		textBody.append("fontsize=").append(String.valueOf(fontsize)).append(":");
 //		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
-		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 		textBody.append("fontcolor=").append(fontColor).append(":");
 		textBody.append("x=(w-tw)/2").append(":");
 		textBody.append("y=(h-th)/2");
@@ -139,7 +139,7 @@ public class FFmpegCmdPackage {
 		textBody.append("text=").append(text).append(":");
 		textBody.append("fontsize=").append(String.valueOf(fontsize)).append(":");
 //		textBody.append("fontfile=").append("/system/fonts/DroidSans.ttf").append(":");
-		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 		textBody.append("fontcolor=").append(fontColor).append(":");
 		textBody.append("x=(w-tw)/2").append(":");
 		textBody.append("y=(h-th-line_h)/2");
@@ -178,7 +178,7 @@ public class FFmpegCmdPackage {
 			textBody.append("enable=").append("'between(t,"+String.valueOf(startTime)+","+String.valueOf(endTime)+")'").append(":");
 		textBody.append("text=").append(text1).append(":");
 		textBody.append("fontsize=").append(String.valueOf(fontsize1)).append(":");
-		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+		textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 		textBody.append("fontcolor=").append(fontColor).append(":");
 		textBody.append("x=(w-tw)/2").append(":");
 		textBody.append("y=(h/2-th-").append(String.valueOf(fontsize2+10)).append(")");
@@ -190,7 +190,7 @@ public class FFmpegCmdPackage {
 				textBody.append("enable=").append("'between(t," + String.valueOf(startTime) + "," + String.valueOf(endTime) + ")'").append(":");
 			textBody.append("text=").append(text2).append(":");
 			textBody.append("fontsize=").append(String.valueOf(fontsize2)).append(":");
-			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 			textBody.append("fontcolor=").append(fontColor).append(":");
 			textBody.append("x=(w-tw)/2").append(":");
 			textBody.append("y=(h-text_h)/2");
@@ -201,7 +201,7 @@ public class FFmpegCmdPackage {
 				textBody.append("enable=").append("'between(t," + String.valueOf(startTime) + "," + String.valueOf(endTime) + ")'").append(":");
 			textBody.append("text=").append(text2).append(":");
 			textBody.append("fontsize=").append(String.valueOf(fontsize2)).append(":");
-			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 			textBody.append("fontcolor=").append(fontColor).append(":");
 			textBody.append("x=(w-tw)/2").append(":");
 			textBody.append("y=(h-text_h)/2 - text_h/2 + 5");
@@ -213,7 +213,7 @@ public class FFmpegCmdPackage {
 				textBody.append("enable=").append("'between(t," + String.valueOf(startTime) + "," + String.valueOf(endTime) + ")'").append(":");
 			textBody.append("text=").append(text3).append(":");
 			textBody.append("fontsize=").append(String.valueOf(fontsize3)).append(":");
-			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.NAUM_MYEONG_BOLD)).append(":");
+			textBody.append("fontfile=").append(FontManager.getInstance().getFontFilePath(FontManager.DEFAULT_FONT)).append(":");
 			textBody.append("fontcolor=").append(fontColor).append(":");
 			textBody.append("x=(w-tw)/2").append(":");
 			textBody.append("y=(h-text_h)/2 + text_h/2 + 15");
